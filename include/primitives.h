@@ -111,7 +111,7 @@ namespace priscas
 	/* BW
 	 * generic nth bit bit-word
 	 */
-	class LINK_DE BW
+	class BW
 	{
 		public:
 			virtual UPString toHexString() const = 0;
@@ -142,7 +142,7 @@ namespace priscas
 
 	};
 
-	class LINK_DE BW_16 : public BW
+	class BW_16 : public BW
 	{
 		public:
 			char b_0() { return *(w_addr());}
@@ -193,7 +193,7 @@ namespace priscas
 
 	};
 
-	class LINK_DE BW_32 : public BW
+	class BW_32 : public BW
 	{
 		public:
 			char b_0() { return *(w_addr());}

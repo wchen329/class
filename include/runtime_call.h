@@ -24,32 +24,17 @@
 #include <cstdio>
 #include <map>
 #include <vector>
-#include "diag_cpu.h"
-#include "mem.h"
-#include "mb.h"
 #include "messages.h"
 #include "priscas_global.h"
 #include "range.h"
 #include "shell.h"
+#include "streams.h"
 
 namespace priscas
 {
 	void breakpoint(const Arg_Vec & args, Shell& inst);
-	void cycle(const Arg_Vec & args, Shell& inst);
-	void cpuopts(const Arg_Vec & args, Shell& inst);
 	void exit(const Arg_Vec & args, Shell& inst);
 	void help(const Arg_Vec & args, Shell& inst);
-	void mem(const Arg_Vec & args, Shell& inst);
-	void pci(const Arg_Vec & args, Shell& inst);
-	void power(const Arg_Vec & args, Shell& inst);
-	void rst(const Arg_Vec & args, Shell& inst);
-	void run(const Arg_Vec & args, Shell& inst);
-	void sound(const Arg_Vec & args, Shell& inst);
-	void state(const Arg_Vec & args, Shell& inst);
-	void sr(const Arg_Vec & args, Shell& inst);
-	void time(const Arg_Vec & args, Shell& inst);
-	void trace(const Arg_Vec & args, Shell& inst);
-	void vga(const Arg_Vec & args, Shell& inst);
 }
 
 #endif

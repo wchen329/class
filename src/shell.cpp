@@ -26,14 +26,6 @@
 #include <cstdarg>
 #include <string>
 #include <memory>
-#include "branding.h"
-#include "cpu.h"
-#include "diag_cpu.h"
-#include "mb.h"
-#include "mt_exception.h"
-#include "mtsstream.h"
-#include "interpret.h"
-#include "runtime_call.h"
 #include "shell.h"
 
 namespace priscas
@@ -91,52 +83,6 @@ namespace priscas
 			WriteToOutput("Tip: system directives are preceded by a . (for example .help)\n");
 		}
 
-
-		// Check for valid memory configurations
-		if(shEnv.get_memBitwidth() <= 1)
-		{
-			WriteToError("Error: An error occurred when trying to read memory width (must be larger than 1 and a natural number).");
-			return;
-		}
-
-		else if(shEnv.get_memBitwidth() > 20)
-		{
-			
-			WriteToError("Error: Memory size specified is too large (must be less than or equal to 20 bits wide)");
-			return;
-		}
-
-		// Set CPU Type
-		cpu_t cp = STANDARD;
-
-		if(!shEnv.get_cpuStrings().empty())
-		{
-			cp = static_cast<cpu_t>(atoi(shEnv.get_cpuStrings()[0].c_str()));
-		}
-
-		WriteToOutput("CPU Type: ");
-		switch(cp)
-		{
-			case STANDARD:
-				WriteToOutput("Single Cycle\n");
-				break;
-			case FIVE_P:
-				WriteToOutput("Five Stage Pipeline\n");
-				break;
-			default:
-				WriteToOutput("Invalid CPU type detected. Exiting...\n");
-				return;
-		}
-
-		this->motherboard = new mb(cp, shEnv.get_memBitwidth());
-		motherboard->reset();
-		mb* MB_IN_PTR = motherboard;
-
-		if(!isQuiet)
-		{
-			UPString msg = UPString( "Main Memory size: " + priscas_io::StrTypes::SizeToStr(motherboard->get_mmem_size()) + " bytes\n");
-			WriteToOutput(msg);
-		}
 
 		/* Actual Execution Portion
 		 * This is a "double-pass" assembler
@@ -210,7 +156,7 @@ namespace priscas
 			// Now assemble the rest
 			for(size_t itr = 0; itr < lines.size(); itr++)
 			{
-				if(!this->AsmFlash(lines[itr], *motherboard, asm_pc))
+				if(!this->AsmFlash(lines[itr], asm_pc))
 				{
 					return;
 				}
@@ -305,38 +251,25 @@ namespace priscas
 	}
 
 	// Set up list of runtime directives
-	Shell::Shell() : motherboard(nullptr), isQuiet(false), inst_file(nullptr), tw_error(&priscas_io::null_tstream),
+	Shell::Shell() : isQuiet(false), inst_file(nullptr), tw_error(&priscas_io::null_tstream),
 		tw_output(&priscas_io::null_tstream), tw_input(&priscas_io::null_tstream), NoConsoleOutput(false),
 		hasAsmInput(false)
 	{
 		// Set up jump table for runtime directives
 		this->directives.insert(directive_pair(".breakpoint", priscas::breakpoint));
-		this->directives.insert(directive_pair(".cycle", priscas::cycle));
 		this->directives.insert(directive_pair(".exit", priscas::exit));
 		this->directives.insert(directive_pair(".help", priscas::help));
-		this->directives.insert(directive_pair(".mem", priscas::mem));
-		this->directives.insert(directive_pair(".pci", priscas::pci));
-		this->directives.insert(directive_pair(".cpuopts", priscas::cpuopts));
-		this->directives.insert(directive_pair(".power", priscas::power));
-		this->directives.insert(directive_pair(".rst", priscas::rst));
-		this->directives.insert(directive_pair(".run", priscas::run));
-		this->directives.insert(directive_pair(".sr", priscas::sr));
-		this->directives.insert(directive_pair(".sound", priscas::sound));
-		this->directives.insert(directive_pair(".state", priscas::state));
-		this->directives.insert(directive_pair(".trace", priscas::trace));
-		this->directives.insert(directive_pair(".time", priscas::time));
-		this->directives.insert(directive_pair(".vga", priscas::vga));
 	}
 
-	inline bool Shell::AsmFlash(const UPString& ains, mb& target, const BW& asm_pc)
+	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc)
 	{
 				Arg_Vec asm_args = chop_string(ains);
-				diag_cpu & dcpu = dynamic_cast<diag_cpu&>(target.get_cpu());
-				ISA& dcpuisa = dcpu.get_ISA();
+//				ISA& dcpuisa = dcpu.get_ISA();
 				mBW inst;
 				try
 				{
-					inst = dcpuisa.assemble(asm_args, asm_pc, jump_syms);
+					// Here, we write the instruction to memory
+//					inst = dcpuisa.assemble(asm_args, asm_pc, jump_syms);
 				}
 
 				catch(priscas::mt_exception& e)
@@ -352,11 +285,12 @@ namespace priscas
 					return false;
 				}
 
-				BW_32& thirty_two = dynamic_cast<BW_32&>(*inst);
+/*				BW_32& thirty_two = dynamic_cast<BW_32&>(*inst);
 				target.DMA_write(thirty_two.b_0(), asm_pc.AsUInt32());
 				target.DMA_write(thirty_two.b_1(), asm_pc.AsUInt32() + 1);
 				target.DMA_write(thirty_two.b_2(), asm_pc.AsUInt32() + 2);
 				target.DMA_write(thirty_two.b_3(), asm_pc.AsUInt32() + 3);
+*/
 
 				return true;
 	}

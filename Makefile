@@ -4,8 +4,8 @@ VPATH = src:build
 BIN_DIR = bin
 LIB_DIR = build
 CFLAGS = -g -I"$(INCLUDE)"
-OBJS =  env.o format_chk.o interpret.o messages.o mips.o mtsstream.o \
-	primitives.o range.o reg_32.o runtime_call.o \
+OBJS =  env.o format_chk.o messages.o mips.o mtsstream.o \
+	interpret.o primitives.o range.o reg_32.o runtime_call.o \
 	shell.o streams.o syms_table.o priscas_osi.o
 SHELL_MAIN = shell_entry.o
 INCLUDE = include

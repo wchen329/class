@@ -29,7 +29,7 @@
 
 namespace priscas
 {
-	LINK_DE typedef std::list<size_t>::iterator range_iterator;
+	typedef std::list<size_t>::iterator range_iterator;
 
 	/* A generic, iterable "range"
 	 * Really just an ordered collection of numbers which can be iterated over
@@ -44,9 +44,9 @@ namespace priscas
 		// i.e. 0:4:2 would look like 0, 2 (4 is out of range)
 		// the step can be omitted which then would look like 0:4 (0, 1, 2, 3)
 		public:
-			LINK_DE range(const UPString&);
-			LINK_DE range_iterator begin() { return this->numbers.begin(); }
-			LINK_DE range_iterator end() { return this->numbers.end(); }
+			range(const UPString&);
+			range_iterator begin() { return this->numbers.begin(); }
+			range_iterator end() { return this->numbers.end(); }
 	};
 }
 

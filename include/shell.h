@@ -26,13 +26,19 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "branding.h"
 #include "env.h"
-#include "mb.h"
 #include "primitives.h"
 #include "priscas_global.h"
 #include "priscas_osi.h"
 #include "syms_table.h"
 #include "streams.h"
+
+namespace priscas
+{
+	class Shell;
+}
+#include "runtime_call.h"
 
 namespace priscas
 {
@@ -56,32 +62,31 @@ namespace priscas
 	{
 
 		public:
-			LINK_DE void Run();
-			LINK_DE void SetArgs(std::vector<std::string> & args) { this->args = args; }
-			LINK_DE mb& GetMotherboard() { return *this->motherboard; } // Call this **after** Run
-			LINK_DE void SetQuiet() { isQuiet = true; }
-			LINK_DE Env::Mode_t modeget() { return shEnv.get_Mode(); }
-			LINK_DE void modeset_Machine() { shEnv.update_Mode(Env::MACHINE); }
-			LINK_DE void modeset_Interactive() { shEnv.update_Mode(Env::INTERACTIVE); }
-			LINK_DE void modeset_Shutdown() { shEnv.update_Mode(Env::SHUTDOWN); }
+			void Run();
+			void SetArgs(std::vector<std::string> & args) { this->args = args; }
+			void SetQuiet() { isQuiet = true; }
+			Env::Mode_t modeget() { return shEnv.get_Mode(); }
+			void modeset_Machine() { shEnv.update_Mode(Env::MACHINE); }
+			void modeset_Interactive() { shEnv.update_Mode(Env::INTERACTIVE); }
+			void modeset_Shutdown() { shEnv.update_Mode(Env::SHUTDOWN); }
 
-			LINK_DE void WriteToOutput(std::string& o);
-			LINK_DE void WriteToOutput(const char* e);
-			LINK_DE void WriteToError(std::string& e);
-			LINK_DE void WriteToError(const char* e);
-			LINK_DE const UPString& ReadFromInput();
+			void WriteToOutput(std::string& o);
+			void WriteToOutput(const char* e);
+			void WriteToError(std::string& e);
+			void WriteToError(const char* e);
+			const UPString& ReadFromInput();
 
-			LINK_DE void add_program_breakpoint(unsigned long line); // sets the program breakpoint directly, CANNOT be used be external sources (yet!)
-			LINK_DE void declare_program_breakpoint(unsigned long line); // queues the breakpoint to be added, but doesn't set it
-			LINK_DE void add_microarch_breakpoint(unsigned long cycle) { this->microarch_breakpoints.insert(std::pair<unsigned long, bool>(cycle, true)); }
-			LINK_DE void setOutputTextStream(priscas_io::text_stream & ts) { this->tw_output = &ts; }
-			LINK_DE void setErrorTextStream(priscas_io::text_stream & ts) { this->tw_error = &ts; }
-			LINK_DE void setInputTextStream(priscas_io::text_stream & ts) { this->tw_input = &ts; }
-			LINK_DE void setNoConsoleOutput(bool torf) { this->NoConsoleOutput = torf; }
+			void add_program_breakpoint(unsigned long line); // sets the program breakpoint directly, CANNOT be used be external sources (yet!)
+			void declare_program_breakpoint(unsigned long line); // queues the breakpoint to be added, but doesn't set it
+			void add_microarch_breakpoint(unsigned long cycle) { this->microarch_breakpoints.insert(std::pair<unsigned long, bool>(cycle, true)); }
+			void setOutputTextStream(priscas_io::text_stream & ts) { this->tw_output = &ts; }
+			void setErrorTextStream(priscas_io::text_stream & ts) { this->tw_error = &ts; }
+			void setInputTextStream(priscas_io::text_stream & ts) { this->tw_input = &ts; }
+			void setNoConsoleOutput(bool torf) { this->NoConsoleOutput = torf; }
 
-			LINK_DE std::string getLineAtPC(unsigned long pc) {return this->PC_to_line_string.count(pc) > 0 ? this->PC_to_line_string[pc] : "???";}
-			LINK_DE ~Shell() { delete motherboard; if(this->inst_file != nullptr) fclose(inst_file); }
-			LINK_DE Shell();
+			std::string getLineAtPC(unsigned long pc) {return this->PC_to_line_string.count(pc) > 0 ? this->PC_to_line_string[pc] : "???";}
+			~Shell() { if(this->inst_file != nullptr) fclose(inst_file); }
+			Shell();
 
 		private:
 			bool NoConsoleOutput;
@@ -94,11 +99,10 @@ namespace priscas
 			Shell& operator=(const Shell&);
 			Shell(const Shell&);
 			std::vector<std::string> args;
-			priscas::mb * motherboard;
 			bool isQuiet;
 
 			// Assembling facilities
-			inline bool AsmFlash(const UPString& ains, mb& target, const BW& asm_pc); // macroop for assemble and flash; return true if success, false if not
+			inline bool AsmFlash(const UPString& ains, const BW& asm_pc); // macroop for assemble and flash; return true if success, false if not
 
 			// The environment which the shell wraps around
 			Env shEnv;
