@@ -78,9 +78,11 @@ namespace priscas
 
 		else
 		{
-			inst_file = stdin;
-			WriteToOutput("Starting in interactive mode...\n");
-			WriteToOutput("Tip: system directives are preceded by a . (for example .help)\n");
+			WriteToOutput("Usage:\n");
+			WriteToOutput("\t{-i [i_filename.s]} - assemble file of name i_filename.s\n");
+			WriteToOutput("\t{-o [o_filename.bin]} - dump assembly output to file of name o_filename.bin \n");
+			WriteToOutput("\t{-l [datastream.bin]} - load datastream.bin into memory for FPGA access");
+			return;
 		}
 
 
@@ -182,7 +184,7 @@ namespace priscas
 		size_t real_end = input.size();
 		for(size_t cind = 0; cind < input.size(); cind++)
 		{
-			if(input[cind] == '#')
+			if(input[cind] == ';')
 			{
 				real_end = cind;
 				break;

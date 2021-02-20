@@ -5,7 +5,7 @@ BIN_DIR = bin
 LIB_DIR = build
 CFLAGS = -g -I"$(INCLUDE)"
 OBJS =  env.o format_chk.o messages.o mtsstream.o \
-	range.o runtime_call.o \
+	range.o runtime_call.o program.o \
 	shell.o streams.o syms_table.o priscas_osi.o
 SHELL_MAIN = shell_entry.o
 INCLUDE = include
@@ -26,46 +26,26 @@ $(BIN_DIR)/class: $(OBJS) $(SHELL_MAIN) $(INCLUDE)
 		mkdir $(BIN_DIR); \
 	fi
 	cd build; $(CC) $(OBJS) $(SHELL_MAIN) -g -o ../$@
-$(BIN_DIR)/simUI: build/libmtcore.a
-	@ echo "Building simUI..."
-	@ if \
-		test $(QMAKE); \
-	then \
-		cd simUI && \
-		$(QMAKE) simUI.pro -r -spec linux-g++ CONFIG+=debug && \
-		make && \
-		cp simUI ../bin; \
-	else \
-		echo "Could not find qmake. Please specify the path of the qmake executable by defining macro or env. var QMAKE." && \
-		echo "Skipping simUI building..."; \
-	fi
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
 	mv $*.o build 
 release:
-	make all CFLAGS="-O2 -I\"$(INCLUDE)\" -DP_RELEASE"
+	$(MAKE) all CFLAGS="-O3 -I\"$(INCLUDE)\" -DP_RELEASE"
 clean:
 	@if \
 		rm build/*.o; \
 	then \
-		echo "PRISCAS Core and Shell object files removed."; \
+		echo "Object files removed."; \
 	else \
-		echo "PRISCAS Core and Shell object files not found. Skipping..."; \
+		echo "Object files not found. Skipping..."; \
 	fi
 	@if \
 		rm build/*.a; \
 	then \
-		echo "PRISCAS Core library file(s) removed."; \
+		echo "Core library file(s) removed."; \
 	else \
-		echo "PRISCAS Core library file(s) not found. Skipping..."; \
-	fi
-	@if \
-		rm simUI/*.o; \
-	then \
-		echo "PRISCAS simUI object files removed."; \
-	else \
-		echo "simUI object files not found. Skipping..."; \
+		echo "Core library file(s) not found. Skipping..."; \
 	fi
 	@if \
 		rm bin/*; \

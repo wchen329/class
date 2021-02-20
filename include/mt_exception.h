@@ -47,11 +47,7 @@ namespace priscas
 			ASM_BAD_ARG_COUNT,
 			PARSER_UNEXPECTED,
 			PARSER_UNMATCHED_PARENTHESIS,
-			NO_SUCH_CPU_OPTION,
-			IO_FILE_OPEN_FAILURE,
-			IO_DEVICE_TYPE_MISMATCH,
-			IO_HDD_SEEK_FAILURE,
-			IO_HDD_READWRITE_FAILURE
+			PROGRAM_SIZE_VIOLATION
 		};
 	}
 
@@ -69,6 +65,7 @@ namespace priscas
 			std::string message;
 	};
 
+
 	// Register Out of Bounds Exception
 	class reg_oob_exception : public mt_exception
 	{
@@ -76,7 +73,7 @@ namespace priscas
 			reg_oob_exception()
 			{
 				mt_exception::except_num = exception_nums::REGISTER_OOB;
-				mt_exception::message = "Invalid registry index given : out of bounds";
+				mt_exception::message = "Register index out of bounds.";
 			
 			}
 	};
@@ -204,57 +201,16 @@ namespace priscas
 			}
 	};
 
-	class mt_no_such_cpu_option : public mt_exception
+	class mt_program_size_violation : public mt_exception
 	{
 		public:
-			mt_no_such_cpu_option(const UPString& option_name)
+			mt_program_size_violation()
 			{
-				mt_exception::except_num = exception_nums::NO_SUCH_CPU_OPTION;
-				mt_exception::message = (UPString("The option ") + UPString(option_name) + UPString(" does not exist for this CPU."));
+				mt_exception::except_num = exception_nums::PROGRAM_SIZE_VIOLATION;
+				mt_exception::message = "Program size is too large too fit into allocated buffer";
 			}
 	};
 
-	class mt_io_file_open_failure : public mt_exception
-	{
-		public:
-			mt_io_file_open_failure(const UPString& filename)
-			{
-				mt_exception::except_num = exception_nums::IO_FILE_OPEN_FAILURE;
-				mt_exception::message = (UPString("Failed to open file ") + UPString(filename) + UPString("."));
-			}
-	};
-
-	class mt_io_device_type_mismatch : public mt_exception
-	{
-		public:
-			mt_io_device_type_mismatch()
-			{
-				mt_exception::except_num = exception_nums::IO_DEVICE_TYPE_MISMATCH;
-				mt_exception::message = UPString("A request was sent to a device, but the device does not understand that particular device. The request as a result has been ignored.");
-			}
-
-	};
-
-	class mt_io_hdd_rw_io_failure : public mt_exception
-	{
-		public:
-			mt_io_hdd_rw_io_failure()
-			{
-				mt_exception::except_num = exception_nums::IO_HDD_SEEK_FAILURE;
-				mt_exception::message = UPString("A read or write to an HDD failed.");
-			}
-
-	};
-
-	class mt_io_hdd_seek_failure : public mt_exception
-	{
-		public:
-			mt_io_hdd_seek_failure()
-			{
-				mt_exception::except_num = exception_nums::IO_HDD_READWRITE_FAILURE;
-				mt_exception::message = UPString("Seeking to the specified address for HDD I/O failed.");
-			}
-	};
 }
 
 #endif

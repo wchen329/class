@@ -137,6 +137,9 @@ namespace priscas
 			virtual bool operator==(const BW& bw2) const = 0;
 			virtual bool operator!=(const BW& bw2) const = 0;
 
+			// Bit count
+			virtual uint8_t get_bitcount() = 0;
+
 	};
 
 	/* BW_generic
@@ -163,7 +166,11 @@ namespace priscas
 			virtual bool operator==(const BW& bw2) const { return bw2.AsUInt64() == this->AsUInt64(); }
 			virtual bool operator!=(const BW& bw2) const { return !this->operator==(bw2);}
 
+			// Constructor
 			BW_generic(BW_back init) : backing_item(init) {}
+
+			// Bit count
+			virtual uint8_t get_bitcount() { return bitcount; }
 
 		private:
 			BW_back backing_item;

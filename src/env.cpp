@@ -8,10 +8,9 @@ namespace priscas
 
 		for(size_t argind = 0; argind < argc; argind++)
 		{
-			if(args[argind] == "-h")
+			if(args[argind] == "-l")
 			{
-				this->has_Option_Help = true;
-				return;
+				this->has_Option_AsmMode = true;
 			}
 
 			if(args[argind] == "-i")
@@ -30,21 +29,19 @@ namespace priscas
 				}
 			}
 
-			if(args[argind] == "-m")
+			if(args[argind] == "-o")
 			{
-				this->has_Option_MemWidth = true;
-				if((argind + 1) < argc)
-				{	
-					this->mem_bitwidth = atoi(args[argind + 1].c_str());
-				}
-			}
+				// Set to machine mode
+				this->update_Mode(MACHINE);
 
-			if(args[argind] == "-c")
-			{
-				this->has_Option_CpuSelect = true;
+				// Declare -o was received
+				this->has_Option_AsmOutput = true;
+				
+				// Set file name
 				if((argind + 1) < argc)
 				{
-					this->cpuStrings.push_back(args[argind + 1]);
+					this->asmOutput = args[argind+1];
+					this->has_AsmOutput_Value = true;
 				}
 			}
 		}

@@ -68,10 +68,10 @@ namespace priscas
 			 */
 			bool get_Option_AsmInput() { return this->has_Option_AsmInput; }
 
-			/* void get_Option_AsmOnly
-			 * Return whether or not ASM Input option -a has been specified
+			/* void get_Option_AsmMode
+			 * Return whether or not Binary Input option -l has been specified
 			 */
-			bool get_Option_AsmMode() { return this->has_Option_AsmInput; }
+			bool get_Option_AsmMode() { return this->has_Option_AsmMode; }
 
 			/* void get_Option_AsmInputSpecified
 			 * Return whether or not ASM Input option -i had a value specified for it
@@ -121,6 +121,7 @@ namespace priscas
 				current_Mode(INTERACTIVE),
 				has_Option_AsmMode(false),
 				has_Option_AsmInput(false),
+				has_Option_AsmOutput(false),
 				has_Option_Help(false),
 				has_Option_MemWidth(false),
 				has_Option_CpuSelect(false),
@@ -132,15 +133,18 @@ namespace priscas
 		private:
 
 			Filename_Vec asmInputs;		// vector of asm input to assemble (-i)
+			UPString asmOutput; // asm output string
 			Arg_Vec cpuStrings;			// specified cpu strings (-c)
 
 			Mode_t current_Mode;		// current mode of the shell as specified above
 			bool has_Option_AsmMode;	// -a option specified
 			bool has_Option_AsmInput;	// -i option specified
+			bool has_Option_AsmOutput;	// -o option specified
 			bool has_Option_Help;		// -h option specified
 			bool has_Option_MemWidth;	// -m option specified
 			bool has_Option_CpuSelect;	// -c option specified
 			bool has_AsmInput_Value;	// -i option has a value
+			bool has_AsmOutput_Value;       // -o option has a value
 			unsigned mem_bitwidth;		// memory bitwidth (default 16)
 			unsigned channel_count;		// amount of memory channels (currently 1), future use
 			unsigned cpu_count;			// amount of cpu sockets (currently 1), future use
