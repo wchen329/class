@@ -26,8 +26,8 @@
 #include <cstdlib>
 #include <memory>
 #include <vector>
-#include "diag_cpu.h"
 #include "messages.h"
+#include "mt_exception.h"
 #include "priscas_global.h"
 
 namespace priscas

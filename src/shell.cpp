@@ -162,7 +162,7 @@ namespace priscas
 				}
 
 				// Increment the PC at which to flash
-				asm_pc.AsUInt32() += 4;
+				//asm_pc.AsUInt32() += 4;
 			}
 			
 		}

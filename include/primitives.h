@@ -25,6 +25,11 @@
 #include <memory>
 #include <string>
 #include "priscas_global.h"
+
+#define BW_MASK_8 0x0FF
+#define BW_MASK_16 0x0FFFF
+#define BW_MASK_32 0x0FFFFFFFF
+
 /* Various byte long
  * primitives such as a 32-bitlong word
  * or a 64-bitlong one.
@@ -109,32 +114,24 @@ namespace priscas
 	}
 
 	/* BW
-	 * generic nth bit bit-word
+	 * interface for generic nth bit bit-word
 	 */
 	class BW
 	{
 		public:
 			virtual UPString toHexString() const = 0;
 
-			// Interpret as signed 16-bit integer
-			virtual int16_t& AsInt16() = 0;
-			virtual const int16_t& AsInt16() const = 0;
+			// Interpret as unsigned 8-bit unsigned integer
+			virtual const uint8_t AsUInt8() const = 0;
 
 			// Interpret as unsigned 16-bit integer
-			virtual uint16_t& AsUInt16() = 0;
-			virtual const uint16_t& AsUInt16() const = 0;
+			virtual const uint16_t AsUInt16() const = 0;
 
-			// Interpret as signed 32-bit integer
-			virtual int32_t& AsInt32() = 0;
-			virtual const int32_t& AsInt32() const = 0;
-			
-			// Interpret as signed 32-bit unsigned integer
-			virtual uint32_t& AsUInt32() = 0;
-			virtual const uint32_t& AsUInt32() const = 0;
+			// Interpret as unsigned 32-bit unsigned integer
+			virtual const uint32_t AsUInt32() const = 0;
 
-			// Interpret as single precision floating point number 
-			virtual float& AsSPFloat() = 0;
-			virtual const float& AsSPFloat() const = 0;
+			// Interpret as unsigned 64-bit unsigned integer
+			virtual const uint64_t AsUInt64() const = 0;
 
 			// Equality and non-equality operations
 			virtual bool operator==(const BW& bw2) const = 0;
@@ -142,106 +139,40 @@ namespace priscas
 
 	};
 
-	class BW_16 : public BW
+	/* BW_generic
+	 * A bitword of different backing types.
+	 */
+	template<class BW_back, int bitcount> class BW_generic : public BW
 	{
 		public:
-			char b_0() { return *(w_addr());}
-			char b_1() { return *(w_addr() + 1);}
-			BW_16() { w.i16 = 0; }
-			BW_16(int16_t data){ w.i16 = data; }
-			BW_16(uint16_t data) { w.ui16 = data; }
-			BW_16(char b_0, char b_1);
+			virtual UPString toHexString() const { return genericHexBuilder<BW_back, bitcount>(this->backing_item); }
 
-			UPString toHexString() const { return genericHexBuilder<int16_t, 16>(this->w.i16); }
-			
-			int16_t& AsInt16() { return w.i16; }
-			const int16_t& AsInt16() const { return w.i16; }
+			// Interpret as unsigned 8-bit unsigned integer
+			virtual const uint8_t AsUInt8() const { return (backing_item) & (BW_MASK_8); }
 
-			uint16_t& AsUInt16() { return w.ui16; }
-			const uint16_t& AsUInt16() const { return w.ui16; }
+			// Interpret as unsigned 16-bit integer
+			virtual const uint16_t AsUInt16() const  { return (backing_item) & (BW_MASK_16); }
 
-			// 32-bit operations; since this is operating on a 16-bit number, it is currently not well defined
-			// THE OPERATION OF THE FOLLOWING IS SUBJECT TO CHANGE (potentially undefined)...
-			int32_t& AsInt32() { return w.i32; }
-			const int32_t& AsInt32() const { return w.i32; }
+			// Interpret as unsigned 32-bit unsigned integer
+			virtual const uint32_t AsUInt32() const  { return (backing_item) & (BW_MASK_32); }
 
-			uint32_t& AsUInt32() { return w.ui32; }
-			const uint32_t& AsUInt32() const { return w.ui32; }
+			// Interpret as unsigned 64-bit unsigned integer
+			virtual const uint64_t AsUInt64() const  { return (backing_item); }
 
-			float& AsSPFloat() { return w.fp32; }
-			const float& AsSPFloat() const { return w.fp32; }
-			////////////////// (END undefined cases)
+			// Equality and non-equality operations
+			virtual bool operator==(const BW& bw2) const { return bw2.AsUInt64() == this->AsUInt64(); }
+			virtual bool operator!=(const BW& bw2) const { return !this->operator==(bw2);}
 
-			bool operator==(const BW& bw2) const { return (this->AsInt16() == bw2.AsInt16()); }
-			bool operator!=(const BW& bw2) const { return (this->AsInt16() != bw2.AsInt16()); }
-
+			BW_generic(BW_back init) : backing_item(init) {}
 
 		private:
-			char * w_addr() { return (char*)&w.i16; }
-
-			union BW_16_internal
-			{
-				int16_t i16;
-				uint16_t ui16;
-				int32_t i32;
-				uint32_t ui32;
-				float fp32;
-			};
-
-			
-			BW_16_internal w;
-
+			BW_back backing_item;
 	};
 
-	class BW_32 : public BW
-	{
-		public:
-			char b_0() { return *(w_addr());}
-			char b_1() { return *(w_addr() + 1);}
-			char b_2() { return *(w_addr() + 2);}
-			char b_3() { return *(w_addr() + 3);}
-
-			BW_32() { w.i32 = 0; }
-			BW_32(int32_t data){ w.i32 = data; }
-			BW_32(uint32_t data) { w.ui32 = data; }
-			BW_32(float data) { w.fp32 = data; }
-			BW_32(char b_0, char b_1, char b_2, char b_3);
-
-
-			UPString toHexString() const { return genericHexBuilder<int32_t, 32>(this->w.i32); }
-			
-			const int16_t& AsInt16() const { return w.i16; }
-			int16_t& AsInt16() { return w.i16; }
-			
-			const uint16_t& AsUInt16() const { return w.ui16; }
-			uint16_t& AsUInt16() { return w.ui16; }
-			
-			const int32_t& AsInt32() const { return w.i32; }
-			int32_t& AsInt32() { return w.i32; }
-			
-			const uint32_t& AsUInt32() const { return w.ui32; }
-			uint32_t& AsUInt32() { return w.ui32; }
-
-			const float& AsSPFloat() const { return w.fp32; }
-			float& AsSPFloat() { return w.fp32; }
-
-			bool operator==(const BW& bw2) const { return (this->AsInt32() == bw2.AsInt32()); }
-			bool operator!=(const BW& bw2) const { return (this->AsInt32() != bw2.AsInt32()); }
-
-		private:
-			char * w_addr() { return (char*)&w.i32; }
-			
-			union BW_32_internal
-			{
-				int16_t i16;
-				uint16_t ui16;
-				int32_t i32;
-				uint32_t ui32;
-				float fp32;
-			};
-
-			BW_32_internal w;
-	};
+	typedef BW_generic<uint8_t, 8> BW_8;
+	typedef BW_generic<uint16_t, 16> BW_16;
+	typedef BW_generic<uint32_t, 32> BW_32;
+	typedef BW_generic<uint64_t, 64> BW_64;
 
 	/* Just a collection of two strings
 	 * Name - the name of this object
@@ -275,82 +206,11 @@ namespace priscas
 			std::string value;
 	};
 
-	enum HighLevelType
-	{
-		T_NONE,
-		T_BW32,
-		T_INT,
-		T_INT32,
-		T_UINT,
-		T_UINT32,
-		T_FLOAT,
-		T_DOUBLE,
-		T_STRING,
-		T_OTHER
-	};
-
-	template<class TC> HighLevelType getTypeGeneric()
-	{
-		if(typeid(TC) == typeid(int))
-		{
-			return T_INT;
-		}
-
-		else if(typeid(TC) == typeid(unsigned))
-		{
-			return T_UINT;
-		}
-			
-		else if(typeid(TC) == typeid(long) || typeid(TC) == typeid(int32_t))
-		{
-			return T_INT32;
-		}
-
-		else if(typeid(TC) == typeid(unsigned long) || typeid(TC) == typeid(uint32_t))
-		{
-			return T_UINT32;
-		}
-
-		else if(typeid(TC) == typeid(float))
-		{
-			return T_FLOAT;
-		}
-
-		else if(typeid(TC) == typeid(double))
-		{
-			return T_DOUBLE;
-		}
-
-		else if(typeid(T_STRING) == typeid(std::string))
-		{
-			return T_STRING;
-		}
-		/*
-		else if(typeid(TC) == typeid(BW_16))
-		{
-			return T_BW16;
-		}*/
-
-		else if(typeid(TC) == typeid(BW_32))
-		{
-			return T_BW32;
-		}
-		/*
-		else if(typeid(TC) == typeid(BW_64))
-		{
-			return T_BW64;
-		}*/
-		else
-		{
-			return T_OTHER;
-		}
-	}
-
-	
 	/* Bit-Word (Managed)
 	 * (mBW)
 	 */
 	typedef std::shared_ptr<BW> mBW;
+
 }
 
 #endif
