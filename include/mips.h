@@ -41,7 +41,6 @@
 #include "mt_exception.h"
 #include "primitives.h"
 #include "priscas_global.h"
-#include "reg_32.h"
 #include "syms_table.h"
 
 namespace priscas
@@ -144,7 +143,12 @@ namespace priscas
 
 	int friendly_to_numerical(const char *);
 
-	
+	// From a register specifier, i.e. %so get an integer representation
+	int get_reg_num(const char *);
+
+	// From a immediate string, get an immediate value.
+	int get_imm(const char *);
+
 	namespace ALU
 	{
 		enum ALUOp
@@ -223,8 +227,7 @@ namespace priscas
 			virtual std::string get_reg_name(int id);
 			virtual int get_reg_id(std::string& fr) { return friendly_to_numerical(fr.c_str()); }
 			virtual int get_register_bit_width(int id) { return UNIVERSAL_REG_BW; }
-			virtual ISA_Attrib::addrmode get_addressing_mode() { return ISA_Attrib::ADDR_BYTE; }
-			virtual ISA_Attrib::endian get_endian() { return ISA_Attrib::CPU_LITTLE_ENDIAN; }
+			virtual ISA_Attrib::endian get_endian() { return ISA_Attrib::CPU_BIG_ENDIAN; }
 			virtual mBW assemble(const Arg_Vec& args, const BW& baseAddress, syms_table& jump_syms) const;
 		private:
 			static const unsigned REG_COUNT = 32;

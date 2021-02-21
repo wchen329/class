@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdarg>
+#include <iostream>
 #include <string>
 #include <memory>
 #include "shell.h"
@@ -178,7 +179,10 @@ namespace priscas
 			// Now assemble the rest
 			for(size_t itr = 0; itr < lines.size(); itr++)
 			{
-				if(!this->AsmFlash(lines[itr], asm_pc))
+				// Specify the ISA to use
+				MIPS_32 theISA;
+
+				if(!this->AsmFlash(lines[itr], asm_pc, theISA))
 				{
 					return;
 				}
@@ -310,15 +314,14 @@ namespace priscas
 		this->directives.insert(directive_pair(".help", priscas::help));
 	}
 
-	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc)
+	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isain)
 	{
 				Arg_Vec asm_args = chop_string(ains);
-//				ISA& dcpuisa = dcpu.get_ISA();
 				mBW inst;
 				try
 				{
 					// Here, we write the instruction to memory
-//					inst = dcpuisa.assemble(asm_args, asm_pc, jump_syms);
+					inst = isain.assemble(asm_args, asm_pc, jump_syms);
 				}
 
 				catch(priscas::mt_exception& e)
@@ -368,7 +371,7 @@ namespace priscas
 	{
 		if(!NoConsoleOutput)
 		{
-			fprintf(stderr, e.c_str());
+			std::cerr << e;
 		}
 
 		*tw_error << e;
@@ -378,7 +381,7 @@ namespace priscas
 	{
 		if(!NoConsoleOutput)
 		{
-			fprintf(stderr, e);
+			std::cerr << std::string(e);
 		}
 
 		std::string err = std::string(e);
@@ -393,7 +396,7 @@ namespace priscas
 		{
 			if(!NoConsoleOutput)
 			{
-				fprintf(stdout, o.c_str());
+				std::cout << o;
 			}
 
 			*tw_output << o;

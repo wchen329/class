@@ -104,7 +104,7 @@ namespace priscas
 			 * Return:	mBW
 			 *			bitword corresponding to assembled instruction
 			 */
-			virtual mBW assemble(const UPString& args,
+			virtual mBW assemble(const Arg_Vec& args,
 				const BW& base_address,
 				syms_table& jump_syms) const = 0;
 	};

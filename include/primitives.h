@@ -168,6 +168,10 @@ namespace priscas
 
 			// Constructor
 			BW_generic(BW_back init) : backing_item(init) {}
+			BW_generic() : backing_item(0) {}
+
+			// Assignment
+			BW_generic<BW_back, bitcount> operator=(BW_back in) { backing_item = in; }
 
 			// Bit count
 			virtual uint8_t get_bitcount() { return bitcount; }
