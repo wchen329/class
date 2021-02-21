@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #ifndef __PRIMITIVES_H__
 #define __PRIMITIVES_H__
+#include <algorithm>
 #include <cctype>
 #include <cstdint>
 #include <memory>
@@ -140,6 +141,15 @@ namespace priscas
 			// Bit count
 			virtual uint8_t get_bitcount() = 0;
 
+			// Get byte at n
+			virtual uint8_t get_nth_byte(uint8_t offset) = 0;
+
+			// Set byte at n
+			virtual void set_nth_byte(uint8_t offset, uint8_t data) = 0;
+
+			// Reverse endian
+			// On x86/AMD64 machines, the default is little
+			virtual void reverse_endian() = 0;
 	};
 
 	/* BW_generic
@@ -175,6 +185,22 @@ namespace priscas
 
 			// Bit count
 			virtual uint8_t get_bitcount() { return bitcount; }
+
+			// Get byte at n
+			virtual uint8_t get_nth_byte(uint8_t offset) { return *reinterpret_cast<unsigned char*>((&backing_item) + offset); }
+
+			// Set byte at n
+			virtual void set_nth_byte(uint8_t offset, uint8_t data) { *reinterpret_cast<unsigned char*>((&backing_item) + offset) = data; }
+
+			// Reverse endian
+			virtual void reverse_endian()
+			{
+				unsigned bytes = bitcount / 8;
+				byte_8b* begin = reinterpret_cast<byte_8b*>(&backing_item);
+				byte_8b* end = reinterpret_cast<byte_8b*>((&backing_item)) + bytes;
+
+				std::reverse<byte_8b*>(begin, end);
+			}
 
 		private:
 			BW_back backing_item;

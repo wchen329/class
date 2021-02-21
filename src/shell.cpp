@@ -337,12 +337,22 @@ namespace priscas
 					return false;
 				}
 
-/*				BW_32& thirty_two = dynamic_cast<BW_32&>(*inst);
-				target.DMA_write(thirty_two.b_0(), asm_pc.AsUInt32());
-				target.DMA_write(thirty_two.b_1(), asm_pc.AsUInt32() + 1);
-				target.DMA_write(thirty_two.b_2(), asm_pc.AsUInt32() + 2);
-				target.DMA_write(thirty_two.b_3(), asm_pc.AsUInt32() + 3);
-*/
+				// Write the instruction to the program
+
+				// If big endian, we must reverse (since we are on an intel host)
+				if(isain.get_endian() == ISA_Attrib::CPU_BIG_ENDIAN)
+				{
+					inst->reverse_endian();
+				}
+
+				// Now, we can write
+				unsigned byte_count = inst->get_bitcount() / 8;
+
+				for(size_t bind = 0; bind < byte_count; ++bind)
+				{
+					prog.write_next(inst->get_nth_byte(bind));
+				}
+
 				return true;
 	}
 
