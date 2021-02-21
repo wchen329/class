@@ -21,8 +21,10 @@
 #ifndef __MTSSTREAM_H__
 #define __MTSSTREAM_H__
 #include <cstdio>
+#include <cstdint>
 #include "primitives.h"
 #include "priscas_global.h"
+#include "mt_exception.h"
 
 namespace priscas
 {
@@ -30,8 +32,8 @@ namespace priscas
 	class asm_ostream
 	{
 		public:	
-			void append(priscas::BW_32);
-			asm_ostream(char * filename);
+			void append(uint8_t ui);
+			asm_ostream(const char * filename);
 			~asm_ostream();
 		private:
 			FILE * f;

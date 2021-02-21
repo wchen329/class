@@ -81,10 +81,19 @@ namespace priscas
 			WriteToOutput("Usage:\n");
 			WriteToOutput("\t{-i [i_filename.s]} - assemble file of name i_filename.s\n");
 			WriteToOutput("\t{-o [o_filename.bin]} - dump assembly output to file of name o_filename.bin \n");
-			WriteToOutput("\t{-l [datastream.bin]} - load datastream.bin into memory for FPGA access");
+			WriteToOutput("\t{-l [datastream.bin]} - load datastream.bin into memory for FPGA access\n");
 			return;
 		}
 
+
+		if(shEnv.get_Option_AsmOutput())
+		{
+			if(!shEnv.get_Option_AsmOutputSpecified())
+			{
+				WriteToError("Error: -o requires a filename to be specified.\n");
+				return;
+			}
+		}
 
 		/* Actual Execution Portion
 		 * This is a "double-pass" assembler
@@ -105,12 +114,12 @@ namespace priscas
 			uint32_t equiv_pc = 0;
 			BW_32 asm_pc = 0;
 
-			char input_f_stream[255];
+			char input_f_stream[256];
 			memset(input_f_stream, 0, sizeof(input_f_stream));
 			unsigned long line_number = 0;
 			try
 			{
-				while(fgets(input_f_stream, 254, inst_file) != NULL)
+				while(fgets(input_f_stream, 255, inst_file) != NULL)
 				{
 					line_number++;
 					UPString current_line = UPString(input_f_stream);
@@ -125,7 +134,15 @@ namespace priscas
 					if(parts[0][parts[0].size() - 1] == ':')
 					{
 						this->jump_syms.insert(parts[0].substr(0, parts[0].size() - 1), equiv_pc);
-						continue;
+
+						// If the label is the only declaration on this line, continue
+						if(parts.size() == 1)
+						{
+							continue;
+						}
+
+						// Otherwise assemble this instruction too
+						trim_label(current_line);
 					}
 
 					if(parts[0][0] == '.')
@@ -133,6 +150,9 @@ namespace priscas
 						this->directive_syms.insert(current_line, equiv_pc);
 						continue;
 					}
+
+					// Strip newlines at the back
+					current_line.pop_back();
 
 					this->line_number_to_PC.insert(std::pair<unsigned long, unsigned long>(line_number, equiv_pc));
 					this->PC_to_line_number.insert(std::pair<unsigned long, unsigned long>(equiv_pc, line_number));
@@ -144,7 +164,7 @@ namespace priscas
 			catch(mt_exception& e)
 			{
 				WriteToOutput("An error has occurred when writing debugging symbols and assigning directives:\n\t");
-				WriteToOutput(e.get_err().c_str());
+				WriteToOutput(e.get_err().c_str()); WriteToOutput(priscas_io::newLine.c_str());
 				return;
 			}
 
@@ -169,8 +189,35 @@ namespace priscas
 			
 		}
 
-		// Write this to program, or remain in memory
 
+		try
+		{
+			// Write this to program, or remain in memory
+			if(shEnv.get_Option_AsmOutput())
+			{
+				// Dump the output
+				asm_ostream prg_o(shEnv.get_OutputFilename().c_str());
+
+				uint64_t ind = 0;
+				while(ind < prog.get_EOP())
+				{
+					prg_o.append(prog.read(ind));
+					++ind;
+				}
+			}
+			else
+			{
+				// Otherwise act as a loader
+
+			}
+
+			fprintf(stdout, "Operation completed succesfully\n");
+		}
+		catch(mt_exception& mte)
+		{
+			WriteToOutput("An error has occurred:\n");
+			WriteToOutput(mte.get_err().c_str()); WriteToOutput(priscas_io::newLine.c_str());
+		}
 	}
 
 	/* Takes an input string and breaks that string into a vector of several
@@ -293,7 +340,6 @@ namespace priscas
 				target.DMA_write(thirty_two.b_2(), asm_pc.AsUInt32() + 2);
 				target.DMA_write(thirty_two.b_3(), asm_pc.AsUInt32() + 3);
 */
-
 				return true;
 	}
 
@@ -443,4 +489,32 @@ namespace priscas
 
 		return vals;
 	}
+
+	void Shell::trim_label(UPString& strin)
+	{
+		UPString snew;
+
+		bool foundcol = false;
+
+		for(ptrdiff_t sc = 0; sc < strin.size(); ++sc)
+		{
+			if(!foundcol)
+			{
+				if(strin[sc] == ':')
+				{
+					foundcol = true;
+				}
+
+				continue;
+			}
+
+			else
+			{
+				snew += strin[sc];
+			}
+		}
+
+		strin = snew;
+	}
+
 }

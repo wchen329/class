@@ -23,6 +23,8 @@ namespace priscas
 
 			const uint8_t* get_PC_zero() { return prog_range; }
 
+			uint64_t get_EOP() { return this->eop; }
+
 			// Empty program
 			Program() : eop(0), eor(MAX_PROGRAM){}
 

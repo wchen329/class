@@ -211,6 +211,16 @@ namespace priscas
 			}
 	};
 
+	class mt_illegal_file_error : public mt_exception
+	{
+		public:
+			mt_illegal_file_error()
+			{
+				mt_exception::except_num = exception_nums::GENERAL;
+				mt_exception::message = "Output file could not be opened for writing.";
+			}
+	};
+
 }
 
 #endif

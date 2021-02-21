@@ -68,6 +68,11 @@ namespace priscas
 			 */
 			bool get_Option_AsmInput() { return this->has_Option_AsmInput; }
 
+			/* void get_Option_AsmOutput
+			 * Return if output was specified
+			 */
+			bool get_Option_AsmOutput() { return this->has_Option_AsmOutput; }
+
 			/* void get_Option_AsmMode
 			 * Return whether or not Binary Input option -l has been specified
 			 */
@@ -77,6 +82,11 @@ namespace priscas
 			 * Return whether or not ASM Input option -i had a value specified for it
 			 */
 			bool get_Option_AsmInputSpecified() { return this->has_AsmInput_Value; }
+
+			/* void get_Option_AsmOutputSpecified
+			 * Return whether or not ASM Input option -o had a value specified for it
+			 */
+			bool get_Option_AsmOutputSpecified() { return this->has_AsmOutput_Value; }
 
 			/* void get_Option_Help
 			 * Return whether or not help option -h has been specified
@@ -102,6 +112,8 @@ namespace priscas
 			 * Get the list of filename inputs
 			 */
 			const Filename_Vec& get_asmFilenames() { return this->asmInputs; }
+
+			const UPString& get_OutputFilename() { return this->asmOutput; }
 
 			/* get_cpuSelectString();
 			 * Get All CPU selection strings

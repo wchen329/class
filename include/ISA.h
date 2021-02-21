@@ -100,11 +100,13 @@ namespace priscas
 			virtual ISA_Attrib::endian get_endian() = 0;
 			
 			/* interpret(arg ...)
-			 * Given a single operand and the number of the argument, interpret the operand as some bits.
-			 * Return:	m_BW
+			 * Assemble an instruction
+			 * Return:	mBW
 			 *			bitword corresponding to assembled instruction
 			 */
-			virtual mBW interpret(const UPString& args, unsigned num) const = 0;
+			virtual mBW assemble(const UPString& args,
+				const BW& base_address,
+				syms_table& jump_syms) const = 0;
 	};
 }
 #endif

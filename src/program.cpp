@@ -20,5 +20,6 @@ namespace priscas
 		}
 
 		prog_range[eop] = data;
+		++eop;
 	}
 }

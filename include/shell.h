@@ -28,9 +28,11 @@
 #include <vector>
 #include "branding.h"
 #include "env.h"
+#include "mtsstream.h"
 #include "primitives.h"
 #include "priscas_global.h"
 #include "priscas_osi.h"
+#include "program.h"
 #include "syms_table.h"
 #include "streams.h"
 
@@ -103,6 +105,7 @@ namespace priscas
 
 			// Assembling facilities
 			inline bool AsmFlash(const UPString& ains, const BW& asm_pc); // macroop for assemble and flash; return true if success, false if not
+			void trim_label(UPString& strin);
 
 			// The environment which the shell wraps around
 			Env shEnv;
@@ -120,6 +123,8 @@ namespace priscas
 			void execute_runtime_directive(std::vector<std::string>& args_list);
 			bool has_ma_break_at(unsigned long line){ return this->microarch_breakpoints.count(line) > 0; }
 			bool has_prog_break_at(unsigned long line){ return this->program_breakpoints.count(line) > 0; }
+
+			Program prog;
 	};
 }
 

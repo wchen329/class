@@ -23,17 +23,18 @@
 namespace priscas
 {
 
-	void asm_ostream::append(priscas::BW_32 data)
+	void asm_ostream::append(uint8_t ui)
 	{
-		fwrite(&data, sizeof(priscas::BW_32), 1, this->f);
+		fwrite(&ui, sizeof(ui), 1, this->f);
 	}
 
-	asm_ostream::asm_ostream(char * filename)
+	asm_ostream::asm_ostream(const char * filename)
 	{
 		this->f = fopen(filename, "w");
 		if(f == NULL)
 		{
 			// Throw an exception here
+			throw  mt_illegal_file_error();
 		}
 	}
 
