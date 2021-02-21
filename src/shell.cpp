@@ -82,7 +82,6 @@ namespace priscas
 			WriteToOutput("Usage:\n");
 			WriteToOutput("\t{-i [i_filename.s]} - assemble file of name i_filename.s\n");
 			WriteToOutput("\t{-o [o_filename.bin]} - dump assembly output to file of name o_filename.bin \n");
-			WriteToOutput("\t{-l [datastream.bin]} - load datastream.bin into memory for FPGA access\n");
 			return;
 		}
 

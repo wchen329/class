@@ -34,7 +34,7 @@
 namespace branding
 {
 	const std::string APPLICATION_NAME = std::string("CLASS");
-	const std::string APPLICATION_DESC = std::string("[Cloud Loader and ASsembler System]");
+	const std::string APPLICATION_DESC = std::string("[assembler]");
 	const std::string APPLICATION_VERSION = std::string("1.0");
 
 	#ifdef P_RELEASE
