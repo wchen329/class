@@ -197,23 +197,23 @@ namespace priscas
 		try
 		{
 			// Write this to program, or remain in memory
+			UPString fname("a.bin");
+
 			if(shEnv.get_Option_AsmOutput())
 			{
-				// Dump the output
-				asm_ostream prg_o(shEnv.get_OutputFilename().c_str());
-
-				uint64_t ind = 0;
-				while(ind < prog.get_EOP())
-				{
-					prg_o.append(prog.read(ind));
-					++ind;
-				}
+				fname = shEnv.get_OutputFilename();
 			}
-			else
+
+			// Dump the output
+			asm_ostream prg_o(fname.c_str());
+
+			uint64_t ind = 0;
+			while(ind < prog.get_EOP())
 			{
-				// Otherwise act as a loader
-
+				prg_o.append(prog.read(ind));
+				++ind;
 			}
+			
 
 			fprintf(stdout, "Operation completed succesfully\n");
 		}
