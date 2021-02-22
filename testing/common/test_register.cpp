@@ -11,8 +11,9 @@
 void Setup_Tests()
 {
 	// Add new tests here
-	AddTest(test_assert, "test_assert");
-	AddTest(test_shell_comments, "test_shell_comments");
-	AddTest(test_shell_justexit, "test_shell_justexit");
-	AddTest(test_shell_multidirectsymbol, "test_shell_multidirect_symbol");
+	AddTest(test_assert, "Assert Test");
+	AddTest(test_shell_comments, "Comments [not implemented]");
+	AddTest(test_shell_justexit, "Exit [not implemented]");
+	AddTest(test_shell_multidirectsymbol, "Multi Symbols [not implemented]");
+	AddTest(test_reverse_endian, "Reverse Endian Test");
 }

@@ -112,7 +112,7 @@ namespace priscas
 
 			UPString_Vec lines;
 			uint32_t equiv_pc = 0;
-			BW_32 asm_pc = 0;
+			BW_64 asm_pc = 0;
 
 			char input_f_stream[256];
 			memset(input_f_stream, 0, sizeof(input_f_stream));
@@ -180,14 +180,15 @@ namespace priscas
 			{
 				// Specify the ISA to use
 				MIPS_32 theISA;
+				uint64_t bytecount;
 
-				if(!this->AsmFlash(lines[itr], asm_pc, theISA))
+				if(!this->AsmFlash(lines[itr], asm_pc, theISA, bytecount))
 				{
 					return;
 				}
 
 				// Increment the PC at which to flash
-				//asm_pc.AsUInt32() += 4;
+				asm_pc = asm_pc.AsUInt64() + bytecount;
 			}
 			
 		}
@@ -313,7 +314,7 @@ namespace priscas
 		this->directives.insert(directive_pair(".help", priscas::help));
 	}
 
-	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isain)
+	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isain, uint64_t& byte_count)
 	{
 				Arg_Vec asm_args = chop_string(ains);
 				mBW inst;
@@ -345,7 +346,7 @@ namespace priscas
 				}
 
 				// Now, we can write
-				unsigned byte_count = inst->get_bitcount() / 8;
+				byte_count = inst->get_bitcount() / 8;
 
 				for(size_t bind = 0; bind < byte_count; ++bind)
 				{

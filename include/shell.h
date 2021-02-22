@@ -106,7 +106,7 @@ namespace priscas
 			bool isQuiet;
 
 			// Assembling facilities
-			inline bool AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isa); // macroop for assemble and flash; return true if success, false if not
+			inline bool AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isa, uint64_t& bytecount); // macroop for assemble and flash; return true if success, false if not
 			void trim_label(UPString& strin);
 
 			// The environment which the shell wraps around

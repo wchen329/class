@@ -187,10 +187,10 @@ namespace priscas
 			virtual uint8_t get_bitcount() { return bitcount; }
 
 			// Get byte at n
-			virtual uint8_t get_nth_byte(uint8_t offset) { return *reinterpret_cast<unsigned char*>((&backing_item) + offset); }
+			virtual uint8_t get_nth_byte(uint8_t offset) { return *nth_byte_addr(offset); }
 
 			// Set byte at n
-			virtual void set_nth_byte(uint8_t offset, uint8_t data) { *reinterpret_cast<unsigned char*>((&backing_item) + offset) = data; }
+			virtual void set_nth_byte(uint8_t offset, uint8_t data) { *nth_byte_addr(offset) = data; }
 
 			// Reverse endian
 			virtual void reverse_endian()
@@ -204,6 +204,11 @@ namespace priscas
 
 		private:
 			BW_back backing_item;
+
+			inline byte_8b* nth_byte_addr(uint8_t offset)
+			{
+					return reinterpret_cast<byte_8b*>(&backing_item) + offset;
+			}
 	};
 
 	typedef BW_generic<uint8_t, 8> BW_8;
