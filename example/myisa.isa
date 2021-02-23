@@ -1,0 +1,38 @@
+; myISA example
+isa=MyISA
+endian=big
+
+register general
+	x:
+		0:30 ; Using range based generation
+		31 ; Using singleton generation
+	y:
+		0:30
+		31
+
+endregister
+
+; Define that rs and rt are names for general register values.
+define rs = register general
+define rt = register general
+define imm = literal
+
+; Define is used to specify specific field values which the register can use
+define opcode
+	addi = 50
+	sll = 1
+	add or and = 0
+enddef
+
+format i
+	asm=opcode rs, rt, imm
+	bits=[31:27] opcode, [26:22] rs, [21:17] rt, [16:0] imm
+
+
+endformat
+
+format r
+	asm=opcode rs, rt, rd
+	bits=[31:27] opcode, [26:22] rs, [21:17] rt, [16:12] rd, [11:0] funct[opcode]
+
+endformat
