@@ -57,20 +57,6 @@ namespace priscas
 	{
 		public:
 			
-			/* get_reg_count()
-			 * Returns the amount of registers in this ISA
-			 * Return:	unsigned int
-			 *			amount of registers in the ISA
-			 */
-			virtual unsigned get_reg_count() = 0;
-
-			/* get_address_bit_width()
-			 * Returns the bit width of a physical memory address
-			 * Return:	unsigned int
-			 *			bits used for physical memory addressing
-			 */
-			virtual unsigned get_address_bit_width() = 0;
-
 			/* get_reg_name(int id)
 			 * Returns the common or "friendly" name of a register given an ID
 			 * Return:	PString
@@ -84,13 +70,6 @@ namespace priscas
 			 *			if ID is valid: name of the register
 			 */
 			virtual int get_reg_id(UPString&) = 0;
-			
-			/* get_register_bit_width(int id)
-			 * Given the id of a register, returns the register's bit width
-			 * Return:	int
-			 *			if ID is valid register_bit_width of register
-			 */
-			virtual int get_register_bit_width(int id) = 0;
 			
 			/* get_endian()
 			 * Get the endian of the ISA

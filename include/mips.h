@@ -222,11 +222,8 @@ namespace priscas
 	{
 		
 		public:
-			unsigned get_reg_count() { return REG_COUNT; }
-			virtual unsigned get_address_bit_width() { return PC_BIT_WIDTH; }
 			virtual std::string get_reg_name(int id);
 			virtual int get_reg_id(std::string& fr) { return friendly_to_numerical(fr.c_str()); }
-			virtual int get_register_bit_width(int id) { return UNIVERSAL_REG_BW; }
 			virtual ISA_Attrib::endian get_endian() { return ISA_Attrib::CPU_BIG_ENDIAN; }
 			virtual mBW assemble(const Arg_Vec& args, const BW& baseAddress, syms_table& jump_syms) const;
 		private:

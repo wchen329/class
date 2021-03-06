@@ -27,6 +27,17 @@
  * Exception Class
  */
 
+#define GEN_MT_EX(EXNAME, MSG) \
+class EXNAME : public mt_exception\
+	{ \
+		public: \
+			EXNAME() \
+			{ \
+				mt_exception::except_num = exception_nums::GENERAL; \
+				mt_exception::message = MSG; \
+			} \
+	}
+
 namespace priscas
 {
 	namespace exception_nums
@@ -221,6 +232,26 @@ namespace priscas
 			}
 	};
 
+	class mt_illegal_value_for : public mt_exception
+	{
+		public: 
+		mt_illegal_value_for(const UPString& name, const UPString& value, const UPString_Vec& accepted)
+		{
+			UPString all_accepted;
+			for(UPString ups : accepted)
+			{
+				all_accepted += (ups + " ");
+			}
+
+			mt_exception::except_num = exception_nums::GENERAL;
+			mt_exception::message = UPString("Illegal value specified for \"") + name + UPString("\".\n") +
+				UPString("Value: ") + value + UPString("\n") + UPString("Accepted: ") + all_accepted + UPString("\n");
+		}
+
+	};
+
+	GEN_MT_EX(mt_local_only, "Error, detected illegal nesting of mode blocks.");
+	GEN_MT_EX(mt_unexpected_end, "Error, unexpected end encountered.");
 }
 
 #endif
