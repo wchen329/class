@@ -17,6 +17,7 @@ namespace priscas
 			}
 			else
 			{
+				rg_prefix = UPString();
 				oms.pop();
 				return;
 			}
@@ -25,17 +26,57 @@ namespace priscas
 		// If not in global mode, do something else
 		switch(oms.top())
 		{
+
 			case OM_REGISTER:
+			{
+				UPString_Vec args = chop_string(linein_1);
+
+				// Split the next strings
+
+				if(args.size() > 2)
+				{
+					throw mt_reg_toomany();
+				}
+
+				// If there is a first argument, take it as a prefix
+				if(args.size() == 2)
+				{
+					rg_prefix = args[0];
+					UPString second = args[1];
+					args = UPString_Vec();
+					args.push_back(second);
+				}
+
+				// If there is no prefix, take it as
+				// the previous, or throw an error.
+				if(args.size() != 0)
+				{
+					if(rg_prefix == "")
+					{
+						throw mt_reg_unknown_prefix();
+					}
+					else
+					{
+						range genrange(args[0]);
+						for(size_t n : genrange)
+						{
+							UPString suffix = priscas_io::StrTypes::UInt64ToStr(n);	
+							UPString reg_name = rg_prefix + suffix;
+
+							rgrps[rgrps.size() - 1].addRegisterName(reg_name);
+							
+						}
+					}
+				}
+
 				return;
-			break;
+			}
 
 			case OM_DEFINE:
 				return;
-			break;
 
 			case OM_FORMAT:
 				return;
-			break;
 		}
 
 		// Then look for direct assignments
@@ -71,6 +112,18 @@ namespace priscas
 		if(args[0] == "register")
 		{
 			ModeSet(OM_REGISTER);
+
+			// We need at least two arguments. Otherwise we are missing
+			// the register class namer.
+			if(args.size() != 2)
+			{
+				throw mt_reg_arg_n2();
+			}
+
+			Register_Group rg;
+			rg.set_rg_name(args[1]);
+			rgrps.push_back(rg);
+
 			return;
 		}
 		else if(args[0] == "define")

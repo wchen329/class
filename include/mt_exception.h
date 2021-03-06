@@ -252,6 +252,9 @@ namespace priscas
 
 	GEN_MT_EX(mt_local_only, "Error, detected illegal nesting of mode blocks.");
 	GEN_MT_EX(mt_unexpected_end, "Error, unexpected end encountered.");
+	GEN_MT_EX(mt_reg_arg_n2, "Error, \"register\" requires a naming argument ex. register [name].");
+	GEN_MT_EX(mt_reg_toomany, "Error, too many arguments when specifying register group (maximum 2).");
+	GEN_MT_EX(mt_reg_unknown_prefix, "Error, unknown prefix for register group.");
 }
 
 #endif

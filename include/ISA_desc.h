@@ -6,6 +6,8 @@
 #include "primitives.h"
 #include "shell.h"
 #include "ISA.h"
+#include "range.h"
+#include "streams.h"
 #include "ustrop.h"
 #include <map>
 #include <vector>
@@ -28,9 +30,10 @@ namespace priscas
 			}
 			const UPString& getNthName(int n){ return reg_names[n]; }
 			unsigned getCount() { return reg_names.size(); }
+			void set_rg_name(const UPString& namein) { rg_name = namein; }
 		private:
 			std::vector<UPString> reg_names; 
-
+			UPString rg_name;
 	};
 
 	class Field
@@ -104,6 +107,7 @@ namespace priscas
 			UPString end;
 
 			std::vector<of_scope> sub_scopes;
+
 	};
 
 	/* of_scope_head
@@ -161,11 +165,15 @@ namespace priscas
 		private:
 			typedef std::vector<Register_Group> RG_Vec;
 			UPString name;
+			UPString reg_prefix;
 			ISA_Attrib::endian e_type;
 			InstFormat_Vec isa_formats;
 			RG_Vec rgrps;
 	
 			std::stack<OpMode> oms;
+
+			// State variables
+			UPString rg_prefix;
 			
 	};
 }

@@ -3,10 +3,10 @@ isa=MyISA
 endian=big
 
 register general
-		x0:30 ; Using range based generation
-		x31 ; Using singleton generation
-		y0:30
-		y31
+	x	0:30 ; Using range based generation
+		31 ; Using singleton generation
+	y	0:30
+		31
 end
 
 ; Define that rs and rt are names for general register values.
