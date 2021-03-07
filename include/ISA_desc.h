@@ -9,6 +9,7 @@
 #include "range.h"
 #include "streams.h"
 #include "ustrop.h"
+#include <cerrno>
 #include <map>
 #include <vector>
 #include <stack>
@@ -30,6 +31,7 @@ namespace priscas
 			}
 			const UPString& getNthName(int n){ return reg_names[n]; }
 			unsigned getCount() { return reg_names.size(); }
+			const UPString& get_rg_name() { return rg_name; }
 			void set_rg_name(const UPString& namein) { rg_name = namein; }
 		private:
 			std::vector<UPString> reg_names; 
@@ -39,27 +41,99 @@ namespace priscas
 	class Field
 	{
 		public:
-			typedef std::map<UPString, uint64_t> AB_pair;
 
-			uint64_t get_Binary_Value(const UPString& key){ return value_map.at(key); }
-			
-			const AB_pair get_KVpairs() { return value_map; }
-			
+			// Name
+			const UPString& get_field_name() const { return this->field_name; }			
 
-			enum type
-			{
-				TYPE_MNEMONIC,
-				TYPE_LITERAL,
-				TYPE_REGISTER
-			};
+			// Set Name
+			void set_field_name(const UPString& us) { this->field_name = us; }			
+
+			// Get the binary part
+			virtual int64_t get_Binary_Value(const UPString& key) = 0;
+
+			// Get the string part
+			virtual const UPString& get_String_Value(int64_t key) = 0;
+
+			// Get the total number of int-string pairs
+			virtual size_t get_num() = 0;
+
 		private:
+			UPString field_name; // Every field has a name
 
-			// This map is used to lookup various values of a
-			// field.
-			AB_pair value_map;
 	};
 
-	typedef std::vector<Field> Field_Vec;
+	class Register_Field : public Field
+	{
+		public:
+			Register_Field(Register_Group* backing)
+			: rg_internal(backing)
+			{
+			}
+
+			// Get the binary part
+			virtual int64_t get_Binary_Value(const UPString& key)
+			{
+				// Have to do a linear search for this one
+				int index = 0;
+				bool found = false;
+				
+				for(int wh = 0; wh < rg_internal->getCount(); ++wh)
+				{
+					// If match, set.
+					if(rg_internal->getNthName(wh) == key)
+					{
+						found = true;
+						break;
+					}
+
+					++index;
+				}
+
+				if(!found)
+				{
+					throw mt_exception();
+				}
+
+				return index;
+			}
+
+			// Get the string part
+			virtual const UPString& get_String_Value(int64_t key)
+			{
+				return rg_internal->getNthName(key);
+			}
+
+			// Get the total number of int-string pairs
+			virtual size_t get_num() { return rg_internal->getCount(); }
+
+		private:
+			Register_Group* rg_internal;
+	};
+
+	typedef std::shared_ptr<Field> m_Field;
+	typedef std::vector<m_Field> m_Field_Vec;
+
+	class Literal_Field : public Field
+	{
+		public:
+
+			// Get the binary part
+			virtual int64_t get_Binary_Value(const UPString& key);
+
+			// Get the string part
+			virtual const UPString& get_String_Value(int64_t key)
+			{
+				retbuf = priscas_io::StrTypes::Int64ToStr(key);
+				return retbuf;
+			}
+
+			// Get the total number of pairs, 0 is too much!
+			virtual size_t get_num() { return 0; }
+
+		private:
+			UPString field_name; // Every field has a name
+			UPString retbuf;
+	};
 
 	class InstFormat
 	{
@@ -68,7 +142,7 @@ namespace priscas
 			const UPString& getName() const { return this->name; }
 		private:
 			UPString name;
-			Field_Vec flds;
+			m_Field_Vec flds;
 			std::vector<unsigned> shift_offset;
 			unsigned i_length; // length of the format
 	};
@@ -168,7 +242,11 @@ namespace priscas
 			UPString reg_prefix;
 			ISA_Attrib::endian e_type;
 			InstFormat_Vec isa_formats;
+			m_Field_Vec all_fields;
 			RG_Vec rgrps;
+
+			// Linear search, return index
+			int find_reg_group(const UPString& search);
 	
 			std::stack<OpMode> oms;
 

@@ -71,6 +71,7 @@ namespace priscas_io
 			static std::string SizeToStr(size_t in);
 			static std::string UInt32ToStr(unsigned long in);
 			static std::string UInt64ToStr(unsigned long long in);
+			static std::string Int64ToStr(long long in);
 	};
 }
 

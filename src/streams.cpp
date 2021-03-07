@@ -70,6 +70,11 @@ namespace priscas_io
 		return GeneralConvToStr<unsigned long long>(in);
 	}
 
+	std::string StrTypes::Int64ToStr(long long in)
+	{
+		return GeneralConvToStr<long long>(in);
+	}
+
 	std::string StrTypes::SizeToStr(size_t in)
 	{
 		return GeneralConvToStr<size_t>(in);

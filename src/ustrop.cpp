@@ -57,4 +57,26 @@ namespace priscas
 		
 		return NameValueStringPair(name, value);
 	}
+
+
+	UPString StrOp::has_prefix(const UPString& strin, const UPString& sprfx)
+	{
+		UPString ret;
+
+		if(sprfx.size() >= strin.size())
+		{
+			return ret;
+		}
+
+		for(size_t ind = 0; ind < sprfx.size(); ++ind)
+		{
+			if(strin[ind] != sprfx[ind])
+			{
+				return ret;
+			}
+		}
+
+		return strin.substr(sprfx.size(), strin.size());
+
+	}
 }

@@ -255,6 +255,13 @@ namespace priscas
 	GEN_MT_EX(mt_reg_arg_n2, "Error, \"register\" requires a naming argument ex. register [name].");
 	GEN_MT_EX(mt_reg_toomany, "Error, too many arguments when specifying register group (maximum 2).");
 	GEN_MT_EX(mt_reg_unknown_prefix, "Error, unknown prefix for register group.");
+	GEN_MT_EX(mt_reg_dup, "Error, duplicate register group detected.");
+	GEN_MT_EX(mt_def_alias_malformed, "Error, malformed alias definition.");
+	GEN_MT_EX(mt_def_reg_arg_err, "Error, register alias definition is missing register group ID or too many arguments specified.");
+	GEN_MT_EX(mt_def_reg_nonexist, "Error, register alias definition refers to non-existent register group.");
+	GEN_MT_EX(mt_def_reg_fn_null, "Error, register alias definition does not define a field name.");
+	GEN_MT_EX(mt_def_null, "Error, define field has no name.");
+	GEN_MT_EX(mt_lit_null, "Error, literal field has no name.");
 }
 
 #endif

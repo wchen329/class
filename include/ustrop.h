@@ -31,5 +31,12 @@ namespace priscas
 		 */
 		static NameValueStringPair tokas(const UPString&);
 
+		/* has_prefix
+		 * Check for a specific prefix (sprfx).
+		 * If non-matching prefix, return null string
+		 * else, return string without the prefix.
+		 */
+		static UPString has_prefix(const UPString& strin, const UPString& sprfx);
+
 	};
 }

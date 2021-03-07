@@ -73,7 +73,10 @@ namespace priscas
 			}
 
 			case OM_DEFINE:
+			{
+				
 				return;
+			}
 
 			case OM_FORMAT:
 				return;
@@ -128,7 +131,89 @@ namespace priscas
 		}
 		else if(args[0] == "define")
 		{
-			ModeSet(OM_DEFINE);
+			// Define statements. Tricky.
+			// Look to see if it's defining a field alias
+			// or, if it's defining a field itself.
+			UPString_Vec args = chop_string(linein_1);
+
+			// If we only have two arguments, we are only trying
+			// to define a new field type
+			// Otherwise, we are defining an alias.
+			if(args.size() == 2)
+			{
+				ModeSet(OM_DEFINE);
+				if(args.size() != 2)
+				{
+					throw mt_def_null();
+				}
+
+				// TODO: assign a new field with the correct name
+
+				return;
+			}
+			else
+			{
+				// Tokenize based on = sign
+				NameValueStringPair nvsp = StrOp::tokas(linein_1);
+
+				// If no assignment, this is malformed
+				if(nvsp.getName() == "" || nvsp.getValue() == "")
+				{
+					throw mt_def_alias_malformed();
+				}
+
+				// Otherwise define the fields
+				UPString_Vec defargs = chop_string(nvsp.getValue());
+				UPString_Vec nmargs = chop_string(nvsp.getName());
+
+				UPString& d_type = defargs[0];
+
+				if(d_type == "register")
+				{
+					if(defargs.size() != 2)
+					{
+						throw mt_def_reg_arg_err();
+					}
+
+					UPString& nm = defargs[1];
+					int index = find_reg_group(nm);
+
+					// If non found, then throw exception
+					if(index == -1)
+					{
+						throw mt_def_reg_nonexist();
+					}
+
+					// Otherwise, instantiate a register group field
+					// Add it to the set of fields
+					
+					m_Field rfi(new Register_Field(&rgrps[index]));
+
+					if(nmargs.size() != 2)
+					{
+						throw mt_def_reg_fn_null();
+					}
+
+					rfi->set_field_name(nmargs[1]);
+					all_fields.push_back(rfi);
+				}
+
+				else if(d_type == "literal")
+				{
+					// In this case, we just add a field type
+					// of literal
+					m_Field lfi(new Literal_Field());
+
+					if(nmargs.size() != 2)
+					{
+						throw mt_lit_null();
+					}
+
+					lfi->set_field_name(nmargs[1]);
+					all_fields.push_back(lfi);
+				}
+			}
+
 			return;
 		}
 		else if(args[0] == "format")
@@ -236,5 +321,63 @@ namespace priscas
 			default:
 				oms.pop();
 		}
+	}
+
+	int ISA_desc::find_reg_group(const UPString& search)
+	{
+		
+		int index = -1;
+		int iter = 0;
+
+		// Look up the register group of this name
+		for(Register_Group rg : rgrps)
+		{
+			if(rg.get_rg_name() == search)
+			{
+				index = iter;
+				break;
+			}
+
+			iter++;
+		}
+
+		return index;
+	}
+
+	int64_t Literal_Field::get_Binary_Value(const UPString& key)
+	{
+		int64_t ret = 0;
+		int base = 10;
+
+		UPString unprefd;
+
+		// First we need to check for prefixes relating to various bases.
+		unprefd = StrOp::has_prefix(key, "0x");		
+		if(unprefd != "")
+		{
+			base = 16;
+		}
+		else
+		{
+			unprefd = StrOp::has_prefix(key, "o");		
+			if(unprefd != "")
+			{
+				base = 8;
+			}
+			else
+			{
+				// If there are no prefixes, just execute assuming decimal
+				unprefd = key;
+			}
+		}
+
+		ret = strtoll(unprefd.c_str(), nullptr, base);
+
+		if(errno)
+		{
+			throw mt_bad_imm();
+		}
+		
+		return ret;
 	}
 }
