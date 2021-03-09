@@ -18,7 +18,7 @@ define imm = literal
 define opcode
 	addi = 50
 	sll = 1
-	add and = 0
+	add and = -1
 end
 
 format i
