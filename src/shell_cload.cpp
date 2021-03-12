@@ -70,5 +70,6 @@ namespace priscas
 		// Set up jump table for runtime directives
 		Shell::directives.insert(directive_pair(".help", priscas::help_loader));
 		Shell::directives.insert(directive_pair(".rst", priscas::reset));
+		Shell::directives.insert(directive_pair(".sr", priscas::sr));
 	}
 }

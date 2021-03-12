@@ -124,6 +124,10 @@ namespace priscas
 			{
 				msg = HELP_RST;
 			}
+			else if(args[1] == ".sr")
+			{
+				msg = HELP_SR;
+			}
 
 			inst.WriteToOutput(msg.c_str());
 		}
@@ -131,5 +135,188 @@ namespace priscas
 
 	void reset(const Arg_Vec & args, Shell& inst)
 	{
+		bool reset_afu = false;
+		bool reset_host = false;
+
+		if(args.size() <= 1)
+		{
+			reset_afu = true;
+			reset_host = true;
+		}
+		else
+		{
+			if(args[1] == "-afu")
+			{
+				reset_afu = true;
+			}
+			else if(args[1] == "-host")
+			{
+				reset_host = true;
+			}
+		}
+
+		//
+		if(!reset_afu && !reset_host)
+		{
+			inst.WriteToOutput("No reset performed.\n");
+			inst.WriteToOutput("Valid arguments for .rst include -afu and -host\n");
+			return;
+		}
+
+		// Perform resets.
+		if(reset_afu)
+		{
+			// TODO: perform reset
+			inst.WriteToOutput("AFU Reset.\n");
+		}
+
+		if(reset_host)
+		{
+			// TODO: reset host ram 
+			inst.WriteToOutput("Host Memory Reset\n");
+		}
+	}
+
+	void sr(const Arg_Vec& args, Shell& inst)
+	{
+		if(args.size() <= 1)
+		{
+			inst.WriteToError("Invalid Usage, please refer to online help on how to use this sr.\n");
+			return;
+		}
+
+		if(args[1] == "-r")
+		{
+			bool bige = false;
+
+			if(args.size() < 4)
+			{
+				inst.WriteToError("-r: not enough arguments\n");
+				return;
+			}
+				
+			// Read file in
+			FILE* f = fopen(args[2].c_str(), "r");
+
+			if(!f)
+			{
+				inst.WriteToError("-r: source file could not be opened\n");
+				return;
+			}
+
+			int iind = 3;
+
+			if(args[3] == "-bige")
+			{
+				bige = true;
+				iind = 4;
+
+				if(args.size() < 5)
+				{
+					inst.WriteToError("-r: not enough arguments");
+					fclose(f);
+					return;
+				}
+			}
+
+			uint64_t addr = 0;
+			try
+			{
+				UPString begin_addr = args[iind];
+				addr = StrOp::StrToUInt64(begin_addr);
+			}
+			catch(mt_exception& e)
+			{
+				inst.WriteToError("Error when parsing begin address, the address was likely malformed.\n");
+				inst.WriteToError(e.get_err());
+				fclose(f);
+				return;
+			}
+
+			UPString str_addr = genericHexBuilder<uint64_t, 64>(addr);
+
+			// Flatten the file opened
+
+			// TODO: use fread into the program array.
+
+			UPString head = "Squashed file beginning @ address: ";
+			UPString msg = head + str_addr + priscas_io::newLine;
+			inst.WriteToOutput(msg);
+				
+			fclose(f);
+			return;
+		}
+		else if(args[1] == "-s")
+		{
+			bool bige = false;
+
+			if(args.size() < 5)
+			{
+				inst.WriteToError("-s: not enough arguments\n");
+				return;
+			}
+				
+			// Read file in
+			FILE* f = fopen(args[2].c_str(), "w");
+
+			if(!f)
+			{
+				inst.WriteToError("-s: error opening target file\n");
+				return;
+			}
+
+			int iind = 3;
+
+			if(args[3] == "-bige")
+			{
+				bige = true;
+				iind = 4;
+
+				if(args.size() < 6)
+				{
+					inst.WriteToError("-s: not enough arguments");
+					fclose(f);
+					return;
+				}
+			}
+
+			uint64_t addr_b = 0;
+			uint64_t addr_e = 0;
+			try
+			{
+				UPString begin_addr = args[iind];
+				UPString end_addr = args[iind + 1];
+				addr_b = StrOp::StrToUInt64(begin_addr);
+				addr_e = StrOp::StrToUInt64(end_addr);
+			}
+			catch(mt_exception& e)
+			{
+				inst.WriteToError("Error when parsing begin or end address, at least one of the addresses was likely malformed.\n");
+				inst.WriteToError(e.get_err());
+				fclose(f);
+				return;
+			}
+
+			UPString str_addr_b = genericHexBuilder<uint64_t, 64>(addr_b);
+			UPString str_addr_e = genericHexBuilder<uint64_t, 64>(addr_e);
+
+			// Flatten the file opened
+
+			// TODO: use fwrite into the program array.
+
+			UPString head = "Wrote file with data beginning @ address: ";
+			UPString tail = ", ending @ address ";
+			UPString msg = head + str_addr_b + tail + str_addr_e + priscas_io::newLine;
+			inst.WriteToOutput(msg);
+
+			fclose(f);
+			return;
+		}
+
+		else
+		{
+			inst.WriteToOutput("No operation performed. Expecting -r or -s\n");
+			return;
+		}
 	}
 }

@@ -1,6 +1,10 @@
+#ifndef __USTROP_H__
+#define __USTROP_H__
+
 /* Micro String Operations
  * wchen329
  */
+#include "mt_exception.h"
 #include "priscas_global.h"
 #include "primitives.h"
 #include <algorithm>
@@ -38,5 +42,57 @@ namespace priscas
 		 */
 		static UPString has_prefix(const UPString& strin, const UPString& sprfx);
 
+		/* numeric_interpet<>
+		 * Interpret string as specific type
+		 */
+		template<class Tin, Tin (*f)(const char*, char**, int) throw()>
+		static Tin numeric_interpret(const UPString& in)
+		{
+
+			const UPString& key = in;
+			
+			Tin ret = 0;
+			int base = 10;
+
+			UPString unprefd;
+
+			// First we need to check for prefixes relating to various bases.
+			unprefd = StrOp::has_prefix(key, "0x");		
+			if(unprefd != "")
+			{
+				base = 16;
+			}
+			else
+			{
+				unprefd = StrOp::has_prefix(key, "o");		
+				if(unprefd != "")
+				{
+					base = 8;
+				}
+				else
+				{
+					// If there are no prefixes, just execute assuming decimal
+					unprefd = key;
+				}
+			}
+
+			char * epb = nullptr;
+			ret = f(unprefd.c_str(), &epb, base);
+
+			if(*epb != '\0')
+			{
+				throw mt_bad_imm();
+			}
+		
+				return ret;
+			}
+
+			static uint64_t StrToUInt64(const UPString&);
+			static int64_t StrToInt64(const UPString&);
+			static uint32_t StrToUInt32(const UPString&);
+			static int32_t StrToInt32(const UPString&);
+
 	};
 }
+
+#endif

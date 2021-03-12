@@ -79,4 +79,24 @@ namespace priscas
 		return strin.substr(sprfx.size(), strin.size());
 
 	}
+
+	uint64_t StrOp::StrToUInt64(const UPString& in)
+	{
+		return numeric_interpret<unsigned long long, &strtoull>(in);
+	}
+
+	int64_t StrOp::StrToInt64(const UPString& in)
+	{
+		return numeric_interpret<long long, &strtoll>(in);
+	}
+
+	uint32_t StrOp::StrToUInt32(const UPString& in)
+	{
+		return numeric_interpret<unsigned long, &strtoul>(in);
+	}
+
+	int32_t StrOp::StrToInt32(const UPString& in)
+	{
+		return numeric_interpret<signed long, &strtol>(in);
+	}
 }

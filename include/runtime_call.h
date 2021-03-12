@@ -29,6 +29,7 @@
 #include "range.h"
 #include "shell.h"
 #include "streams.h"
+#include "ustrop.h"
 
 namespace priscas
 {
@@ -40,6 +41,7 @@ namespace priscas
 	// For the Loader
 	void help_loader(const Arg_Vec& args, Shell& inst);
 	void reset(const Arg_Vec& args, Shell& inst);
+	void sr(const Arg_Vec& args, Shell& inst);
 }
 
 #endif

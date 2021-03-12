@@ -30,7 +30,7 @@ namespace priscas
 								std::string(".exit - exit\n") +
 								std::string(".help - show this help message or get help with commands\n") +
 								std::string(".rst - reset CPU state and mem state\n") +
-								std::string(".sr - save and restore main memory\n") +
+								std::string(".sr - pack files into main memory, and create files from main memory\n") +
 								std::string("For more help on specific commands use \"help [command]\" (for example .help .rst)\n");
 	const char * BAD_COMMAND = "Unknown command. For more information on acceptable commands type \".help\".\n" ;  // bad command message
 	const char * BAD_FORMAT = "Bad or unsupported register format.\n";
@@ -82,4 +82,8 @@ namespace priscas
 	const std::string HELP_TIME =	std::string(".time\n") +
 									std::string("Print out information about timing information\n");
 
+	const UPString HELP_SR = UPString(".sr\n") +
+		UPString("[no args] - doesn't do anything\n") +
+		UPString("-r pathtofile [-bige] address: flattens file, beginning at address\n\tSpecify bige to interpret as big endian.\n") +
+		UPString("-s pathtofile [-bige] begin,end: saves memory bytes from begin to end into file.\n\tSpecify bige to interpret as big endian.\n");
 }
