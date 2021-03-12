@@ -516,17 +516,6 @@ namespace priscas
 	// Returns immediate value if valid
 	int get_imm(const char * str)
 	{
-		int len = strlen(str);
-		
-		for(int i = 0; i < len; i++)
-		{
-			if(str[i] < '0' || str[i] > '9')
-			{
-				if(i == 0 && str[i] != '-')
-					throw priscas::mt_bad_imm();
-			}
-		}
-
-		return atoi(str);
+		return StrOp::StrToUInt32(UPString(str));
 	}
 }

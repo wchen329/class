@@ -42,6 +42,7 @@
 #include "primitives.h"
 #include "priscas_global.h"
 #include "syms_table.h"
+#include "ustrop.h"
 
 namespace priscas
 {
