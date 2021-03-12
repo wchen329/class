@@ -46,6 +46,11 @@ namespace priscas
 
 namespace priscas
 {
+
+	/* A mapping from a string into a directive function pointer (must be a member of Shell)
+	 */
+	typedef std::pair<std::string, void(*)(const Arg_Vec &, Shell&)> directive_pair;
+
 	/* Divides a string based on whitespace, tabs, commas and newlines
 	 * Acknowledges escaping \ and quotes
 	 */
@@ -66,7 +71,7 @@ namespace priscas
 	{
 
 		public:
-			void Run();
+			virtual void Run();
 			void SetArgs(std::vector<std::string> & args) { this->args = args; }
 			void SetQuiet() { isQuiet = true; }
 			Env::Mode_t modeget() { return shEnv.get_Mode(); }
@@ -91,6 +96,13 @@ namespace priscas
 			std::string getLineAtPC(unsigned long pc) {return this->PC_to_line_string.count(pc) > 0 ? this->PC_to_line_string[pc] : "???";}
 			~Shell() { if(this->inst_file != nullptr) fclose(inst_file); }
 			Shell();
+		protected:
+			void execute_runtime_directive(std::vector<std::string>& args_list);
+			std::map<std::string, void(*)(const Arg_Vec&, Shell& shell)> directives;
+			std::vector<std::string> args;
+
+			// The environment which the shell wraps around
+			Env shEnv;
 
 		private:
 			bool NoConsoleOutput;
@@ -102,15 +114,12 @@ namespace priscas
 			std::string rd_buffer;
 			Shell& operator=(const Shell&);
 			Shell(const Shell&);
-			std::vector<std::string> args;
 			bool isQuiet;
 
 			// Assembling facilities
 			inline bool AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isa, uint64_t& bytecount); // macroop for assemble and flash; return true if success, false if not
 			void trim_label(UPString& strin);
 
-			// The environment which the shell wraps around
-			Env shEnv;
 
 			// Runtime Directives, run through the shell
 			std::map<unsigned long, unsigned long> program_breakpoints;
@@ -119,10 +128,8 @@ namespace priscas
 			std::map<unsigned long, std::string> PC_to_line_string;
 			std::map<unsigned long, bool> microarch_breakpoints;
 			std::queue<unsigned long> queued_prog_breakpoints;
-			std::map<std::string, void(*)(const Arg_Vec&, Shell& shell)> directives;
 			priscas::syms_table jump_syms;
 			priscas::mono_syms_table directive_syms;
-			void execute_runtime_directive(std::vector<std::string>& args_list);
 			bool has_ma_break_at(unsigned long line){ return this->microarch_breakpoints.count(line) > 0; }
 			bool has_prog_break_at(unsigned long line){ return this->program_breakpoints.count(line) > 0; }
 

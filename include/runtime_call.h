@@ -32,9 +32,14 @@
 
 namespace priscas
 {
+	// For the Shell
 	void breakpoint(const Arg_Vec & args, Shell& inst);
 	void exit(const Arg_Vec & args, Shell& inst);
 	void help(const Arg_Vec & args, Shell& inst);
+
+	// For the Loader
+	void help_loader(const Arg_Vec& args, Shell& inst);
+	void reset(const Arg_Vec& args, Shell& inst);
 }
 
 #endif

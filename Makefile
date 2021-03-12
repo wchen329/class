@@ -7,17 +7,19 @@ CFLAGS = -g -I"$(INCLUDE)"
 OBJS =  env.o messages.o mips.o mtsstream.o \
 	range.o runtime_call.o program.o \
 	shell.o streams.o syms_table.o priscas_osi.o \
-	ISA_desc.o ustrop.o
+	ISA_desc.o ustrop.o shell_cload.o
 SHELL_MAIN = shell_entry.o
 ISA_GEN_MAIN = ISA_gen.o
+CLOAD_MAIN = cload.o
 INCLUDE = include
+LIB = -L. -lmtcore
 
-all: build/libmtcore.a $(BIN_DIR)/class $(BIN_DIR)/isa_gen
+all: $(LIB_DIR)/libmtcore.a $(BIN_DIR)/class $(BIN_DIR)/cload
 
 build/libmtcore.a: $(OBJS)
 	cd build; ar r libmtcore.a $(OBJS)
 
-$(BIN_DIR)/class: $(OBJS) $(SHELL_MAIN) $(INCLUDE)
+$(BIN_DIR)/class: $(LIB_DIR)/libmtcore.a $(SHELL_MAIN) $(INCLUDE)
 	@ echo "Looking for bin directory..."
 	@ if \
 		ls $(BIN_DIR); \
@@ -27,10 +29,10 @@ $(BIN_DIR)/class: $(OBJS) $(SHELL_MAIN) $(INCLUDE)
 		echo "bin doesn't exist, making bin..." && \
 		mkdir $(BIN_DIR); \
 	fi
-	cd build; $(CC) $(OBJS) $(SHELL_MAIN) -o ../$@
+	cd build; $(CC) $(SHELL_MAIN) $(LIB) -o ../$@
 
-$(BIN_DIR)/isa_gen: $(OBJS) $(ISA_GEN_MAIN) $(INCLUDE)
-	cd build; $(CC) $(OBJS) $(ISA_GEN_MAIN) -o ../$@
+$(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(INCLUDE)
+	cd build; $(CC) $(CLOAD_MAIN) $(LIB) -o ../$@
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<

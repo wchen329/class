@@ -26,18 +26,11 @@
  */
 namespace priscas
 {
-	const std::string HELP =	std::string(".breakpoint - set breakpoints which will bring up the interactive prompt, that can be used for debugging\n") +
-								std::string(".cpuopts - show special CPU options or execute one\n") +
-								std::string(".cycle - advance the processor a cycle given the current PC\n") +
+	const std::string HELP =
 								std::string(".exit - exit\n") +
 								std::string(".help - show this help message or get help with commands\n") +
 								std::string(".rst - reset CPU state and mem state\n") +
 								std::string(".sr - save and restore main memory\n") +
-								std::string(".state - echo register state\n") +
-								std::string(".mem - show main memory size, or take a peek at memory\n") +
-								std::string(".run - continue running the processor (as in unattended mode)\n") +
-								std::string(".time - show simulation timing information\n") +
-								std::string("[assembly instruction] - execute that instruction, write it to the PC location and cycle\n") +
 								std::string("For more help on specific commands use \"help [command]\" (for example .help .rst)\n");
 	const char * BAD_COMMAND = "Unknown command. For more information on acceptable commands type \".help\".\n" ;  // bad command message
 	const char * BAD_FORMAT = "Bad or unsupported register format.\n";
@@ -74,27 +67,9 @@ namespace priscas
 	const std::string HELP_RST =	std::string(".rst\n") +
 									std::string("Use this to reset certain components of the machine\n") +
 									std::string("Options:\n") +
-									std::string("[no args] - reset both the CPU state and mem state. This is the same as -a (see below).\n") +
-									std::string("-c: reset the CPU state\n") +
-									std::string("-a: reset both the CPU state and mem state\n");
-	const std::string HELP_RUN =	std::string(".run\n") +
-									std::string("Using .run will cycle the CPU continuously without\n") +
-									std::string("bringing up the interactive prompt. It's akin to\n") +
-									std::string("running the CPU for real, or in unattended mode.\n") +
-									std::string("In the CLI shell, control can be returned to the\n") +
-									std::string("interactive shell through CTRL+C. In general, setting\n") +
-									std::string("a breakpoint will also return control to the\n") +
-									std::string("interactive shell.\n");
-	const std::string HELP_SR =		std::string(".sr\n") +
-									std::string("Save or restore main memory.\n") +
-									std::string("To use, specify either save or restore mode and then\n") +
-									std::string("a filename (see below for options). A memory image will be saved to\n") +
-									std::string("or loaded from the given image.\n") +
-									std::string("Options:\n") +
-									std::string("-s (specify save mode)\n") +
-									std::string("-r (specify restore mode)\n") +
-									std::string("-f [FILENAME] (specify an input file)\n") +
-									std::string("Example: .sr -s -f file.img # save main memory to file.img\n");
+									std::string("[no args] - reset both the CPU state and mem state.\n") +
+									std::string("-afu: reset the CPU state\n") +
+									std::string("-host: reset the host memory to all zeroes\n");
 	const std::string HELP_STATE =	std::string(".state\n") +
 									std::string("Print register state information.\n") +
 									std::string("By default the state of every single register will be printed.\n") +

@@ -31,9 +31,6 @@
 
 namespace priscas
 {
-	/* A mapping from a string into a directive function pointer (must be a member of Shell)
-	 */
-	typedef std::pair<std::string, void(*)(const Arg_Vec &, Shell&)> directive_pair;
 
 	/* Shell for CLASS
 	 *
@@ -309,9 +306,7 @@ namespace priscas
 		hasAsmInput(false)
 	{
 		// Set up jump table for runtime directives
-		this->directives.insert(directive_pair(".breakpoint", priscas::breakpoint));
 		this->directives.insert(directive_pair(".exit", priscas::exit));
-		this->directives.insert(directive_pair(".help", priscas::help));
 	}
 
 	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isain, uint64_t& byte_count)

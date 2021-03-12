@@ -92,4 +92,44 @@ namespace priscas
 		}
 	}
 
+	void help_loader(const Arg_Vec & args, Shell& inst)
+	{
+		inst.WriteToOutput(("[Help]\n"));
+
+		if(args.size() <= 1)
+		{
+			inst.WriteToOutput(HELP.c_str());
+			return;
+		}
+
+		else
+		{
+			std::string msg = "Unknown help topic. The command may not exist, or may be undocumented.\n";
+
+			if(args[1] == ".breakpoint")
+			{
+				msg = HELP_BREAKPOINT;
+			}
+
+			else if(args[1] == ".exit")
+			{
+				msg = HELP_EXIT;
+			}
+			
+			else if(args[1] == ".help")
+			{
+				msg = HELP_HELP;
+			}
+			else if(args[1] == ".rst")
+			{
+				msg = HELP_RST;
+			}
+
+			inst.WriteToOutput(msg.c_str());
+		}
+	}
+
+	void reset(const Arg_Vec & args, Shell& inst)
+	{
+	}
 }
