@@ -30,6 +30,13 @@ namespace priscas
 			else
 			{
 				fscript = fopen(shEnv.get_asmFilenames()[0].c_str(), "r");
+
+				if(fscript == nullptr)
+				{
+					fprintf(stdout, "Error: instruction file (through -i) could not be opened for reading.\n");
+					return;
+					
+				}
 			}
 		}
 
