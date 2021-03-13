@@ -91,9 +91,10 @@ namespace priscas
 
 	const UPString HELP_WAIT = UPString(".wait\n") +
 		UPString("Usage: .wait spin_address value_to_look_for [timeout]\n") +
-		UPString(".wait causes the program to spin on \"spin address\" until it reads \"value to look for\" from the spin address.\n") +
-		UPString("It polls the \"spin address\" location approximately every millisecond, until it reads the value it is looking for, or\n") +
-		UPString("\"timeout\" milliseconds is reached. The \"timeout\" is optional and has a default value of 1 second. A user can specify their") +
-		UPString("own timeout in milliseconds. If the user passes a timeout of 0, the program will run until interrupted through SIGINT (or cload is killed/aborted).\n") +
-		UPString("\nExample: .wait 0 100 10; wait 10 ms for the value at address to become 100\n");
+		UPString(".wait causes the program to spin on \"spin_address\" until it reads \"value_to_look_for\" from the spin address.\n") +
+		UPString("It polls the spin address location approximately every millisecond, until it reads the value it is looking for, or\n") +
+		UPString("\"timeout\" milliseconds is reached. The timeout argument is optional and has a default value of 1 second. A user can specify their\n") +
+		UPString("own timeout in milliseconds. If the user passes a timeout of 0, \".wait\" will run until the right value is read,\n") +
+		UPString("until interrupted through SIGINT, or cload is killed/aborted\n") +
+		UPString("\nExample: .wait 0 100 10; wait 10 ms for the value at address 0 to become 100\n");
 }

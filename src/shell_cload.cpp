@@ -85,7 +85,11 @@ namespace priscas
 			}
 
 			fclose(fscript);
-			Shell::modeset_Interactive();
+
+			if(Shell::modeget() != Env::SHUTDOWN)
+			{
+				Shell::modeset_Interactive();
+			}
 		}
 
 		// Get ready for interactive mode

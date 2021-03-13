@@ -182,7 +182,7 @@ namespace priscas
 		if(reset_host)
 		{
 			inst.Mem().reset();
-			inst.WriteToOutput("Host Memory Reset\n");
+			inst.WriteToOutput("Host Memory Reset.\n");
 		}
 	}
 
