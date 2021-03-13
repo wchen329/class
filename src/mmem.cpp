@@ -91,7 +91,8 @@ namespace priscas
 		do
 		{
 			uint64_t where = (begin + offset) % size;
-			fread(this->data + where, sizeof(byte_8b), 1, f);
+			read_count = fread(this->data + where, sizeof(byte_8b), 1, f);
+			++offset;
 		}
 		while(read_count);
 	}

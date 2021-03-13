@@ -1,0 +1,3 @@
+.sr -r README.md 0x0
+.rst -afu ; Reset AFU only
+.sr -s README_2.md 0x0 1077

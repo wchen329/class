@@ -15,6 +15,7 @@ namespace priscas
 		UPString header = app_brand + priscas_io::newLine + UPString("[loader]") +
 			priscas_io::newLine;
 
+		FILE* fscript = nullptr;
 
 		Shell::WriteToOutput(header);
 
@@ -26,6 +27,10 @@ namespace priscas
 				fprintf(stdout, "Error: Option -i requires an argument.\n");
 				return;
 			}
+			else
+			{
+				fscript = fopen(shEnv.get_asmFilenames()[0].c_str(), "r");
+			}
 		}
 
 		// Set memory mode.
@@ -36,9 +41,48 @@ namespace priscas
 		priscas_io::StrTypes::UInt64ToStr(mem_size) + (" bytes\n");
 		WriteToOutput(mem_msg);
 
-		// Invoke input script is possible.
+		// Invoke input script if possible.
+		if(fscript != nullptr)
+		{
+			const size_t MAX_SIZE = 256;
+			char input_f_stream[MAX_SIZE];
+			memset(input_f_stream, 0, sizeof(input_f_stream));
+			while(fgets(input_f_stream, MAX_SIZE - 1, fscript) != nullptr)
+			{
+				UPString val = UPString(input_f_stream);
+
+				if(val.size() == 0)
+				{
+					continue;
+				}
+
+				else if(val[0] == '.')
+				{
+					try
+					{
+						UPString_Vec chopped = chop_string(val);
+						Shell::execute_runtime_directive(chopped);
+					}
+			
+					catch(priscas::mt_exception & e)
+					{
+						WriteToError(e.get_err());
+					}
+				}
+				else
+				{
+					UPString_Vec args;
+					args.push_back(".help");
+					Shell::execute_runtime_directive(args);
+				}
+			}
+
+			fclose(fscript);
+			Shell::modeset_Interactive();
+		}
 
 		// Get ready for interactive mode
+
 	
 		while(Shell::modeget() == Env::INTERACTIVE)
 		{

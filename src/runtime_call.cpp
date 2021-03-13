@@ -177,7 +177,7 @@ namespace priscas
 
 		if(reset_host)
 		{
-			// TODO: reset host ram 
+			inst.Mem().reset();
 			inst.WriteToOutput("Host Memory Reset\n");
 		}
 	}
@@ -241,8 +241,7 @@ namespace priscas
 			UPString str_addr = genericHexBuilder<uint64_t, 64>(addr);
 
 			// Flatten the file opened
-
-			// TODO: use fread into the program array.
+			inst.Mem().restore(addr, f);
 
 			UPString head = "Squashed file beginning @ address: ";
 			UPString msg = head + str_addr + priscas_io::newLine;
@@ -306,8 +305,7 @@ namespace priscas
 			UPString str_addr_e = genericHexBuilder<uint64_t, 64>(addr_e);
 
 			// Flatten the file opened
-
-			// TODO: use fwrite into the program array.
+			inst.Mem().save(addr_b, addr_e, f);
 
 			UPString head = "Wrote file with data beginning @ address: ";
 			UPString tail = ", ending @ address ";
