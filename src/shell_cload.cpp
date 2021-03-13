@@ -28,7 +28,17 @@ namespace priscas
 			}
 		}
 
+		// Set memory mode.
+		WriteToOutput("Allocating memory resources...\n");
+		uint64_t mem_size = 64*MB;
+		Mem().resize(mem_size);
+		UPString mem_msg = UPString("Memory Size: ") +
+		priscas_io::StrTypes::UInt64ToStr(mem_size) + (" bytes\n");
+		WriteToOutput(mem_msg);
+
 		// Invoke input script is possible.
+
+		// Get ready for interactive mode
 	
 		while(Shell::modeget() == Env::INTERACTIVE)
 		{
@@ -63,6 +73,7 @@ namespace priscas
 		}
 	}
 
+
 	// Set up list of runtime directives
 	Shell_Cload::Shell_Cload() :
 		Shell()
@@ -71,5 +82,6 @@ namespace priscas
 		Shell::directives.insert(directive_pair(".help", priscas::help_loader));
 		Shell::directives.insert(directive_pair(".rst", priscas::reset));
 		Shell::directives.insert(directive_pair(".sr", priscas::sr));
+		Shell::directives.insert(directive_pair(".mem", priscas::mem));
 	}
 }

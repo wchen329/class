@@ -88,6 +88,7 @@ namespace priscas
 				msg = HELP_HELP;
 			}
 
+
 			inst.WriteToOutput(msg.c_str());
 		}
 	}
@@ -127,6 +128,10 @@ namespace priscas
 			else if(args[1] == ".sr")
 			{
 				msg = HELP_SR;
+			}
+			else if(args[1] == ".mem")
+			{
+				msg = HELP_MEM;
 			}
 
 			inst.WriteToOutput(msg.c_str());
@@ -317,6 +322,50 @@ namespace priscas
 		{
 			inst.WriteToOutput("No operation performed. Expecting -r or -s\n");
 			return;
+		}
+	}
+
+	void mem(const Arg_Vec & args, Shell& inst)
+	{
+		inst.WriteToOutput(("[Memory Information]\n"));
+
+		mmem& cmp = inst.Mem();
+
+		// No args specified just print the memory size (in bytes)
+		if(args.size() <= 1)
+		{
+			std::string o = (std::string("Main memory Size: " + priscas_io::StrTypes::SizeToStr(cmp.get_size()) + std::string(" bytes\n")));
+			inst.WriteToOutput(o);
+			return;
+		}
+
+		size_t first = 1;
+		bool hexOutput = false;
+		if(args[1] == "-h")
+		{
+			hexOutput = true;
+			first++;
+		}
+
+		// Otherwise print memory specific to indicies
+		for(size_t itr = first; itr < args.size(); itr++)
+		{
+			priscas::range r = priscas::range(args[itr]);
+
+			for(priscas::range_iterator itr_2 = r.begin(); itr_2 != r.end(); itr_2++)
+			{
+				if(*itr_2 >= inst.Mem().get_size() || *itr_2 < 0)
+				{
+					throw priscas::mem_oob_exception();
+				}
+
+				UPString index_str = hexOutput ? genericHexBuilder<uint32_t, 32>(*itr_2) :  priscas_io::StrTypes::SizeToStr(*itr_2);
+				UPString val_str = hexOutput ? genericHexBuilder<uint8_t, 8>(inst.Mem()[*itr_2]) : priscas_io::StrTypes::IntToStr(inst.Mem()[*itr_2]);
+
+				std::string o = (std::string("Mem[") + index_str + std::string("]: ") + 
+					val_str + priscas_io::newLine);
+				inst.WriteToOutput(o);
+			}
 		}
 	}
 }

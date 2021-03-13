@@ -31,6 +31,7 @@ namespace priscas
 								std::string(".help - show this help message or get help with commands\n") +
 								std::string(".rst - reset CPU state and mem state\n") +
 								std::string(".sr - pack files into main memory, and create files from main memory\n") +
+								std::string(".mem - show main memory size, or take a peek at memory\n") +
 								std::string("For more help on specific commands use \"help [command]\" (for example .help .rst)\n");
 	const char * BAD_COMMAND = "Unknown command. For more information on acceptable commands type \".help\".\n" ;  // bad command message
 	const char * BAD_FORMAT = "Bad or unsupported register format.\n";

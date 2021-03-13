@@ -18,31 +18,36 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 //////////////////////////////////////////////////////////////////////////////
-#ifndef __RUNTIME_CALL_H__
-#define __RUNTIME_CALL_H__
-
-#include <cstdio>
-#include <map>
-#include <vector>
-#include "messages.h"
+#ifndef __MMEM_H__
+#define __MMEM_H__
+#include <cstring>
 #include "priscas_global.h"
-#include "range.h"
-#include "shell.h"
-#include "streams.h"
-#include "ustrop.h"
+#include "primitives.h"
 
 namespace priscas
 {
-	// For the Shell
-	void breakpoint(const Arg_Vec & args, Shell& inst);
-	void exit(const Arg_Vec & args, Shell& inst);
-	void help(const Arg_Vec & args, Shell& inst);
+	// Main memory
+	class mmem
+	{
+		public:
+			size_t get_size(){return size;}		// returns size;
+			byte_8b * begin() {return data;}	// get beginning address of data range
+			mmem();
+			mmem(size_t);
+			byte_8b& operator[](ptrdiff_t ind);
+			const byte_8b& operator[](ptrdiff_t ind) const;
+			void save(ptrdiff_t begin, ptrdiff_t end, FILE*);
+			void restore(ptrdiff_t begin, FILE*);
+			void resize(size_t size);
+			void reset();
+			~mmem();
+		private:
+			mmem operator=(const mmem &);		// copy assignment, disabled
+			mmem(const mmem &);					// copy constructor, disabled
+			byte_8b * data;					// the actual data of memory
+			size_t size;					// size of memory space in bytes
+	};
 
-	// For the Loader
-	void help_loader(const Arg_Vec& args, Shell& inst);
-	void reset(const Arg_Vec& args, Shell& inst);
-	void sr(const Arg_Vec& args, Shell& inst);
-	void mem(const Arg_Vec& args, Shell& inst);
 }
 
 #endif

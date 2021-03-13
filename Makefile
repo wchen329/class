@@ -7,7 +7,7 @@ CFLAGS = -g -I"$(INCLUDE)"
 OBJS =  env.o messages.o mips.o mtsstream.o \
 	range.o runtime_call.o program.o \
 	shell.o streams.o syms_table.o priscas_osi.o \
-	ISA_desc.o ustrop.o shell_cload.o
+	ISA_desc.o ustrop.o shell_cload.o mmem.o
 SHELL_MAIN = shell_entry.o
 ISA_GEN_MAIN = ISA_gen.o
 CLOAD_MAIN = cload.o
