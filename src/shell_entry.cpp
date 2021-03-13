@@ -23,9 +23,8 @@
 #include <vector>
 #include "priscas_core.h"
 
-void break_machine(int arg);
-
 priscas::Shell runtime; // Simulator Runtime
+
 
 /* Main routine for running
  * the CLASS directly.
@@ -41,6 +40,7 @@ int main(int argc, char ** argv)
 	{
 		args.push_back(UPString(argv[carg]));
 	}
+
 
 	// Set arguments to the ones just built from the passed in argv
 	runtime.SetArgs(args);

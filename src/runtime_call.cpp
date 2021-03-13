@@ -133,6 +133,10 @@ namespace priscas
 			{
 				msg = HELP_MEM;
 			}
+			else if(args[1] == ".wait")
+			{
+				msg = HELP_WAIT;
+			}
 
 			inst.WriteToOutput(msg.c_str());
 		}
@@ -365,5 +369,71 @@ namespace priscas
 				inst.WriteToOutput(o);
 			}
 		}
+	}
+
+	void wait(const Arg_Vec& args, Shell& inst)
+	{
+		// This sleeps until a timeout or a condition in shared memory
+		// with the FPGA is met
+		inst.WriteToOutput("[Wait]\nWaiting...\n");
+		uint64_t numms = 0;
+		uint64_t timeout = 1000;
+		uint64_t address_polling = 0;
+		uint8_t value_wait = 0;
+
+		if(args.size() < 3)
+		{
+			inst.WriteToOutput("Insufficient arguments for wait. Stopping...\n");
+			return;
+		}
+
+		if(args.size() >= 3)
+		{
+			// Arg 0: .wait
+			// Arg 1: address polling
+			// Arg 2: value to wait for
+			address_polling = StrOp::StrToUInt64(args[1]);
+			value_wait = StrOp::StrToUInt32(args[2]);
+		}
+		if(args.size() >= 4)
+		{
+			// Arg 3: timeout
+			timeout = StrOp::StrToUInt64(args[3]);
+		}
+
+		// Normalize address
+		address_polling = address_polling % inst.Mem().get_size();
+
+		inst.modeset_Machine();
+
+		// This is implemented through polling every millisecond, approximate
+		while(inst.modeget() == Env::MACHINE && (numms < timeout || timeout == 0))
+		{
+			priscas_osi::sleep(1);
+
+			// Check the corresponding memory address. If it is "val"
+			// then break.
+			if(inst.Mem()[address_polling]== value_wait)
+			{
+				break;
+			}
+			
+			++numms;
+		}
+
+		if(numms == timeout && timeout != 0)
+		{
+			inst.WriteToOutput("Wait Timed out.\n");
+		}
+		else if(inst.modeget() != Env::MACHINE)
+		{
+			inst.WriteToOutput("User aborted wait.\n");
+		}
+		else
+		{
+			inst.WriteToOutput("Wait observed a state change which allowed it to continue.\n");
+		}
+
+		inst.modeset_Interactive();
 	}
 }

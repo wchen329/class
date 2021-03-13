@@ -90,38 +90,44 @@ namespace priscas
 
 		// Get ready for interactive mode
 
-	
-		while(Shell::modeget() == Env::INTERACTIVE)
+		while(Shell::modeget() == Env::INTERACTIVE || Shell::modeget() == Env::MACHINE)
 		{
-			Shell::WriteToOutput(">> ");
 
-			const UPString& val = this->ReadFromInput();
-
-			if(val.size() == 0)
+			if(Shell::modeget() != Env::MACHINE)
 			{
-				continue;
-			}
+				Shell::WriteToOutput(">> ");
 
-			else if(val[0] == '.')
-			{
-				try
-				{
-					UPString_Vec chopped = chop_string(val);
-					Shell::execute_runtime_directive(chopped);
-				}
+				const UPString& val = this->ReadFromInput();
 			
-				catch(priscas::mt_exception & e)
+
+				if(val.size() == 0)
 				{
-					WriteToError(e.get_err());
+					continue;
 				}
-			}
-			else
-			{
-				UPString_Vec args;
-				args.push_back(".help");
-				Shell::execute_runtime_directive(args);
+
+				else if(val[0] == '.')
+				{
+					try
+					{
+						UPString_Vec chopped = chop_string(val);
+						Shell::execute_runtime_directive(chopped);
+					}
+			
+					catch(priscas::mt_exception & e)
+					{
+						WriteToError(e.get_err());
+					}
+				}
+				else
+				{
+					UPString_Vec args;
+					args.push_back(".help");
+					Shell::execute_runtime_directive(args);
+				}
+
 			}
 		}
+
 	}
 
 
@@ -134,5 +140,6 @@ namespace priscas
 		Shell::directives.insert(directive_pair(".rst", priscas::reset));
 		Shell::directives.insert(directive_pair(".sr", priscas::sr));
 		Shell::directives.insert(directive_pair(".mem", priscas::mem));
+		Shell::directives.insert(directive_pair(".wait", priscas::wait));
 	}
 }

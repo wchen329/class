@@ -25,6 +25,7 @@
 #include <map>
 #include <vector>
 #include "messages.h"
+#include "priscas_osi.h"
 #include "priscas_global.h"
 #include "range.h"
 #include "shell.h"
@@ -43,6 +44,7 @@ namespace priscas
 	void reset(const Arg_Vec& args, Shell& inst);
 	void sr(const Arg_Vec& args, Shell& inst);
 	void mem(const Arg_Vec& args, Shell& inst);
+	void wait(const Arg_Vec& args, Shell& inst);
 }
 
 #endif

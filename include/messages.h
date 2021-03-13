@@ -37,6 +37,7 @@ namespace priscas
 	extern const std::string HELP_SR;
 	extern const std::string HELP_TIME;
 	extern const std::string HELP_RUN;
+	extern const std::string HELP_WAIT;
 	extern const char * BAD_COMMAND;  	// bad command message
 	extern const char * BAD_FORMAT;		// bad format
 	extern const char * NON_DIAG_CPU;	// non diagnostic cpu warning

@@ -32,6 +32,7 @@ namespace priscas
 								std::string(".rst - reset CPU state and mem state\n") +
 								std::string(".sr - pack files into main memory, and create files from main memory\n") +
 								std::string(".mem - show main memory size, or take a peek at memory\n") +
+								std::string(".wait - wait on a condition before performing the next option\n") +
 								std::string("For more help on specific commands use \"help [command]\" (for example .help .rst)\n");
 	const char * BAD_COMMAND = "Unknown command. For more information on acceptable commands type \".help\".\n" ;  // bad command message
 	const char * BAD_FORMAT = "Bad or unsupported register format.\n";
@@ -87,4 +88,12 @@ namespace priscas
 		UPString("[no args] - doesn't do anything\n") +
 		UPString("-r pathtofile [-bige] address: flattens file, beginning at address\n\tSpecify bige to interpret as big endian.\n") +
 		UPString("-s pathtofile [-bige] begin,end: saves memory bytes from begin to end into file.\n\tSpecify bige to interpret as big endian.\n");
+
+	const UPString HELP_WAIT = UPString(".wait\n") +
+		UPString("Usage: .wait spin_address value_to_look_for [timeout]\n") +
+		UPString(".wait causes the program to spin on \"spin address\" until it reads \"value to look for\" from the spin address.\n") +
+		UPString("It polls the \"spin address\" location approximately every millisecond, until it reads the value it is looking for, or\n") +
+		UPString("\"timeout\" milliseconds is reached. The \"timeout\" is optional and has a default value of 1 second. A user can specify their") +
+		UPString("own timeout in milliseconds. If the user passes a timeout of 0, the program will run until interrupted through SIGINT (or cload is killed/aborted).\n") +
+		UPString("\nExample: .wait 0 100 10; wait 10 ms for the value at address to become 100\n");
 }
