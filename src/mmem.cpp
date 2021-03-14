@@ -119,10 +119,19 @@ namespace priscas
 			throw std::bad_alloc();
 		}
 
+		// When allocating, we have to write the array
+		// starting address out
+		afu->write(MMIO_BASE_ADDR, reinterpret_cast<uint64_t>(this->data));
+		afu->write(MMIO_SIZE, 1);
+
 	}
 
 	void mmem::dealloc()
 	{
-//		afu->free(this->data);
+		// Declare the below memory hierarchy as invalid
+		afu->write(MMIO_BASE_ADDR, 0x0);
+
+		// Deallocate array
+		afu->free(this->data);
 	}
 }

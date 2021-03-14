@@ -7,8 +7,8 @@ CFLAGS = -g -I"$(INCLUDE)" -I"$(INCLUDE_CONTRIB)"
 OBJS =  env.o messages.o mips.o mtsstream.o \
 	range.o program.o \
 	shell.o streams.o syms_table.o priscas_osi.o \
-	ISA_desc.o ustrop.o mmem.o
-CLOAD_OBJS = AFU.o shell_cload.o runtime_call.o
+	ISA_desc.o ustrop.o
+CLOAD_OBJS = AFU.o shell_cload.o runtime_call.o mmem.o
 SHELL_MAIN = shell_entry.o
 ISA_GEN_MAIN = ISA_gen.o
 CLOAD_MAIN = cload.o

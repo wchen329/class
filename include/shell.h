@@ -30,7 +30,6 @@
 #include "env.h"
 #include "ISA.h"
 #include "mips.h"
-#include "mmem.h"
 #include "mtsstream.h"
 #include "primitives.h"
 #include "priscas_global.h"

@@ -35,14 +35,8 @@ const unsigned SLEEP_MS = 10;
 // AFU MMIO Addresses
 
 enum MmioAddr {
-  
-  MMIO_GO=0x0050,
-  MMIO_RD_ADDR=0x0052,
-  MMIO_WR_ADDR=0x0054,
-  MMIO_SIZE=0x0056,
-  MMIO_DONE=0x0058
+   MMIO_BASE_ADDR = 0x0050,
+   MMIO_SIZE = 0x52
 };
-
-
 
 #endif

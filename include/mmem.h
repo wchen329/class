@@ -22,6 +22,7 @@
 #define __MMEM_H__
 #include <cstring>
 #include "AFU.h"
+#include "config.h"
 #include "priscas_global.h"
 #include "primitives.h"
 

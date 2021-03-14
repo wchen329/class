@@ -22,6 +22,7 @@
 #define __SHELL_CLOAD_H__
 #include "AFU.h"
 #include "config.h"
+#include "mmem.h"
 #include "afu_json_info.h"
 #include "shell.h"
 
