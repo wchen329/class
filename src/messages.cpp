@@ -97,4 +97,9 @@ namespace priscas
 		UPString("own timeout in milliseconds. If the user passes a timeout of 0, \".wait\" will run until the right value is read,\n") +
 		UPString("until interrupted through SIGINT, or cload is killed/aborted\n") +
 		UPString("\nExample: .wait 0 100 10; wait 10 ms for the value at address 0 to become 100\n");
+
+	const UPString HELP_RESIZE = UPString(".resize\n") +
+		UPString("Usage: .resize numberofbits\n") +
+		UPString("Resizes the pool of addressable memory on the host to be 2^numberofbits\n") +
+		UPString("Example: .resize 20; Give me 1MB of addressable memory on the host\n");
 }

@@ -137,6 +137,10 @@ namespace priscas
 			{
 				msg = HELP_WAIT;
 			}
+			else if(args[1] == ".resize")
+			{
+				msg = HELP_RESIZE;
+			}
 
 			inst.WriteToOutput(msg.c_str());
 		}
@@ -435,5 +439,53 @@ namespace priscas
 		}
 
 		inst.modeset_Interactive();
+	}
+
+	void resize(const Arg_Vec& args, Shell& inst)
+	{
+		inst.WriteToOutput(".resize\n");
+		// Take the mem and resize it to an args[1] size address space.
+		if(args.size() < 2)
+		{
+			inst.WriteToOutput("Usage: .resize numberofbits\n");
+			return;
+		}
+
+		uint64_t bitcount = StrOp::StrToUInt32(args[1]);
+
+		if(bitcount > 32)
+		{
+			inst.WriteToOutput("Too large of an address space specified.\n");
+			inst.WriteToOutput("No resizing done (max size 4GB [32-bit])\n");
+		}
+		else if(bitcount < 16)
+		{
+			inst.WriteToOutput("Too small of an address space specified.\n");
+			inst.WriteToOutput("No resizing done (min size 256 bytes [8-bit]).\n");
+		}
+		else
+		{
+			inst.WriteToOutput("Purging existing memory and resizing...\n");
+
+			bool err = false;
+
+			
+			try
+			{
+				uint64_t memsize = (static_cast<uint64_t>(1) << static_cast<uint64_t>(bitcount));
+				inst.Mem().resize(memsize);
+			}
+			catch(std::bad_alloc)
+			{
+				inst.WriteToOutput("Failed to allocate required memory...\n");
+				inst.WriteToOutput("Allocating 16KB for recovery...\n");
+				inst.Mem().resize(16384);
+				inst.WriteToOutput("Resize completed with errors.\n");
+				err = true;
+			}
+
+			inst.Mem().reset();
+			inst.WriteToOutput("Memory space succesfully resized.\n");
+		}
 	}
 }

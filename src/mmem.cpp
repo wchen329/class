@@ -38,11 +38,10 @@ namespace priscas
 	{
 	}
 
-	mmem::mmem(size_t size)
+	mmem::mmem(size_t size) : 
+		size(size)
 	{
-
-		this -> data = new byte_8b[size];
-		this -> size = size;
+		alloc(size);
 	}
 
 	mmem::mmem(const mmem & m)
@@ -58,14 +57,14 @@ namespace priscas
 
 	void mmem::resize(size_t size)
 	{
-		delete[] this->data;
-		this->data = new byte_8b[size];
+		dealloc();
+		alloc(size);
 		this->size = size;
 	}
 
 	mmem::~mmem()
 	{
-		delete this->data;
+		dealloc();
 	}
 
 	void mmem::save(ptrdiff_t begin, ptrdiff_t end, FILE* f)
@@ -99,7 +98,24 @@ namespace priscas
 
 	void mmem::reset()
 	{
-		// Memset Entire Memory region to zero
 		memset(data, 0, size);
+	}
+
+	void mmem::alloc(size_t bytes)
+	{
+		// Can change allocator
+		// Throw std::bad_alloc, potentially
+		// Could also use new...
+		this->data = static_cast<byte_8b*>(malloc(bytes));
+		if(data == nullptr)
+		{
+			throw std::bad_alloc();
+		}
+
+	}
+
+	void mmem::dealloc()
+	{
+		free(this->data);
 	}
 }

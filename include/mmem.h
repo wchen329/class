@@ -46,6 +46,9 @@ namespace priscas
 			mmem(const mmem &);					// copy constructor, disabled
 			byte_8b * data;					// the actual data of memory
 			size_t size;					// size of memory space in bytes
+
+			void alloc(size_t bytes);
+			void dealloc();
 	};
 
 }

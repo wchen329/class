@@ -144,6 +144,7 @@ namespace priscas
 		Shell::directives.insert(directive_pair(".rst", priscas::reset));
 		Shell::directives.insert(directive_pair(".sr", priscas::sr));
 		Shell::directives.insert(directive_pair(".mem", priscas::mem));
+		Shell::directives.insert(directive_pair(".resize", priscas::resize));
 		Shell::directives.insert(directive_pair(".wait", priscas::wait));
 	}
 }

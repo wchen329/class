@@ -45,6 +45,7 @@ namespace priscas
 	void sr(const Arg_Vec& args, Shell& inst);
 	void mem(const Arg_Vec& args, Shell& inst);
 	void wait(const Arg_Vec& args, Shell& inst);
+	void resize(const Arg_Vec& args, Shell& inst);
 }
 
 #endif
