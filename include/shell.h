@@ -85,7 +85,6 @@ namespace priscas
 			void setInputTextStream(priscas_io::text_stream & ts) { this->tw_input = &ts; }
 			void setNoConsoleOutput(bool torf) { this->NoConsoleOutput = torf; }
 
-			mmem& Mem() { return m_zone; }
 			std::string getLineAtPC(unsigned long pc) {return this->PC_to_line_string.count(pc) > 0 ? this->PC_to_line_string[pc] : "???";}
 			~Shell() { if(this->inst_file != nullptr) fclose(inst_file); }
 			Shell();
@@ -124,9 +123,6 @@ namespace priscas
 			bool has_prog_break_at(unsigned long line){ return this->program_breakpoints.count(line) > 0; }
 
 			Program prog;
-
-			// Loader stuff
-			mmem m_zone;
 	};
 }
 

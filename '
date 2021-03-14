@@ -44,8 +44,8 @@ namespace priscas
 			virtual void Run();
 			Shell_Cload();
 			mmem& Mem() { return shmem; }
-			void AFU_Reset() { afu.reset(); }
 			void execute_runtime_directive(UPString_Vec& args_list);
+			void AFU_Reset() { afu.reset(); }
 
 		private:
 			// AFU
@@ -53,7 +53,7 @@ namespace priscas
 
 			// Runtime Directives
 			priscas::mono_syms_table directive_syms;
-			std::map<std::string, void(*)(const Arg_Vec&, Shell_Cload& shell)> directives;
+			std::map<std::string, void(*)(const Arg_Vec&, Shell& shell)> directives;
 			mmem shmem;
 	};
 }
