@@ -179,8 +179,8 @@ namespace priscas
 		// Perform resets.
 		if(reset_afu)
 		{
-			// TODO: perform reset
 			inst.WriteToOutput("AFU Reset.\n");
+			inst.AFU_Reset();
 		}
 
 		if(reset_host)
