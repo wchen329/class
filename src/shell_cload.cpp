@@ -160,6 +160,9 @@ namespace priscas
 		Shell(),
 		afu(AFU_ACCEL_UUID)
 	{
+		// Set mmem's AFU pointer
+		Mem().setAFU(&afu);
+
 		// Set up jump table for runtime directives
 		directives.insert(directive_pair(".exit", priscas::exit));
 		directives.insert(directive_pair(".help", priscas::help_loader));
