@@ -41,14 +41,16 @@ namespace priscas
 			void resize(size_t size);
 			void reset();
 			~mmem();
+		protected:
+			byte_8b*& raw_ptr() { return this->data; }
 		private:
 			mmem operator=(const mmem &);		// copy assignment, disabled
 			mmem(const mmem &);					// copy constructor, disabled
 			byte_8b * data;					// the actual data of memory
 			size_t size;					// size of memory space in bytes
 
-			void alloc(size_t bytes);
-			void dealloc();
+			virtual void alloc(size_t bytes);
+			virtual void dealloc();
 	};
 
 }

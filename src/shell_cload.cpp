@@ -157,7 +157,8 @@ namespace priscas
 
 	// Set up list of runtime directives
 	Shell_Cload::Shell_Cload() :
-		Shell()
+		Shell(),
+		AFU(AFU_ACCEL_UUID)
 	{
 		// Set up jump table for runtime directives
 		Shell::directives.insert(directive_pair(".help", priscas::help_loader));

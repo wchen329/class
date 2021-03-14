@@ -142,12 +142,6 @@ namespace priscas
 						trim_label(current_line);
 					}
 
-					if(parts[0][0] == '.')
-					{
-						this->directive_syms.insert(current_line, equiv_pc);
-						continue;
-					}
-
 					// Strip newlines at the back
 					current_line.pop_back();
 
@@ -160,7 +154,7 @@ namespace priscas
 			}
 			catch(mt_exception& e)
 			{
-				WriteToOutput("An error has occurred when writing debugging symbols and assigning directives:\n\t");
+				WriteToOutput("An error has occurred when writing symbols table:\n\t");
 				WriteToOutput(e.get_err().c_str()); WriteToOutput(priscas_io::newLine.c_str());
 				return;
 			}
@@ -300,13 +294,10 @@ namespace priscas
 		return str_vec;
 	}
 
-	// Set up list of runtime directives
 	Shell::Shell() : isQuiet(false), inst_file(nullptr), tw_error(&priscas_io::null_tstream),
 		tw_output(&priscas_io::null_tstream), tw_input(&priscas_io::null_tstream), NoConsoleOutput(false),
 		hasAsmInput(false)
 	{
-		// Set up jump table for runtime directives
-		this->directives.insert(directive_pair(".exit", priscas::exit));
 	}
 
 	inline bool Shell::AsmFlash(const UPString& ains, const BW& asm_pc, ISA& isain, uint64_t& byte_count)

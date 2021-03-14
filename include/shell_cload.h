@@ -20,15 +20,38 @@
 //////////////////////////////////////////////////////////////////////////////
 #ifndef __SHELL_CLOAD_H__
 #define __SHELL_CLOAD_H__
+#include "AFU.h"
+#include "config.h"
+#include "afu_json_info.h"
 #include "shell.h"
 
 namespace priscas
 {
+	class Shell_Cload;
+}
+
+#include "runtime_call.h"
+
+namespace priscas
+{
+	/* A mapping from a string into a directive function pointer (must be a member of Shell)
+	 */
+	typedef std::pair<std::string, void(*)(const Arg_Vec &, Shell_Cload&)> directive_pair;
+
 	class Shell_Cload : public Shell
 	{
 		public:
 			virtual void Run();
 			Shell_Cload();
+
+		private:
+			// AFU
+			AFU afu;
+
+			// Runtime Directives
+			void execute_runtime_directive(UPString_Vec& args_list);
+			priscas::mono_syms_table directive_syms;
+			std::map<std::string, void(*)(const Arg_Vec&, Shell& shell)> directives;
 	};
 }
 
