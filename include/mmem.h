@@ -21,6 +21,7 @@
 #ifndef __MMEM_H__
 #define __MMEM_H__
 #include <cstring>
+#include "AFU.h"
 #include "priscas_global.h"
 #include "primitives.h"
 
@@ -31,23 +32,23 @@ namespace priscas
 	{
 		public:
 			size_t get_size(){return size;}		// returns size;
-			byte_8b * begin() {return data;}	// get beginning address of data range
 			mmem();
 			mmem(size_t);
-			byte_8b& operator[](ptrdiff_t ind);
-			const byte_8b& operator[](ptrdiff_t ind) const;
+			volatile byte_8b& operator[](ptrdiff_t ind);
+			const volatile byte_8b& operator[](ptrdiff_t ind) const;
 			void save(ptrdiff_t begin, ptrdiff_t end, FILE*);
 			void restore(ptrdiff_t begin, FILE*);
 			void resize(size_t size);
 			void reset();
+			void setAFU(AFU* afu);
 			~mmem();
 		protected:
-			byte_8b*& raw_ptr() { return this->data; }
+			AFU* afu; 
 		private:
 			mmem operator=(const mmem &);		// copy assignment, disabled
-			mmem(const mmem &);					// copy constructor, disabled
-			byte_8b * data;					// the actual data of memory
-			size_t size;					// size of memory space in bytes
+			mmem(const mmem &);			// copy constructor, disabled
+			volatile byte_8b * data;		// the actual data of memory
+			size_t size;				// size of memory space in bytes
 
 			virtual void alloc(size_t bytes);
 			virtual void dealloc();

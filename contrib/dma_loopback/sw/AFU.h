@@ -51,11 +51,11 @@ public:
   virtual uint64_t read(uint64_t addr) const;  
 
   template <class T>
-  T* malloc(size_t elements, PageOptions page_option=DEFAULT_PAGE_OPTION, bool read_only=false) {   
+  volatile T* malloc(size_t elements, PageOptions page_option=DEFAULT_PAGE_OPTION, bool read_only=false) {   
     
     opae::fpga::types::shared_buffer::ptr_t buf_handle;
     buf_handle = alloc(elements*sizeof(T), page_option, read_only);  
-    return reinterpret_cast<T*>(buf_handle->c_type()); 
+    return buf_handle->c_type(); 
   }
 
   template <class T>
