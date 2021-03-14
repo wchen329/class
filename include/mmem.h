@@ -41,10 +41,8 @@ namespace priscas
 			void restore(ptrdiff_t begin, FILE*);
 			void resize(size_t size);
 			void reset();
-			void setAFU(AFU* afu);
+			void setAFU(AFU* afu) { this->afu = afu; }
 			~mmem();
-		protected:
-			AFU* afu; 
 		private:
 			mmem operator=(const mmem &);		// copy assignment, disabled
 			mmem(const mmem &);			// copy constructor, disabled
@@ -53,6 +51,7 @@ namespace priscas
 
 			virtual void alloc(size_t bytes);
 			virtual void dealloc();
+			AFU* afu; 
 	};
 
 }
