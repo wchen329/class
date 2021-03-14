@@ -33,11 +33,13 @@
 
 #include "shell_cload.h"
 
-priscas::Shell_Cload runtime;
+#include <opae/utils.h>
+
+priscas::Shell_Cload * h_runtime;
 
 void break_machine(int arg)
 {
-	runtime.modeset_Interactive();
+	h_runtime->modeset_Interactive();
 	signal(SIGINT, break_machine);
 }
 
@@ -45,23 +47,40 @@ int main(int argc, char ** argv)
 {
 	using namespace priscas;
 
-	Arg_Vec args; // Arguments to Simulator Runtime
-
-	// Simple pass each argument as an argument to the shell.
-	for(int carg = 0; carg < argc; carg++)
+	try
 	{
-		args.push_back(UPString(argv[carg]));
-	}
+		priscas::Shell_Cload runtime;
+		h_runtime = &runtime;
 
-	// Set up sigint handler
-	signal(SIGINT, break_machine);
+		Arg_Vec args; // Arguments to Simulator Runtime
 
-	// Set arguments to the ones just built from the passed in argv
-	runtime.SetArgs(args);
-	runtime.modeset_Interactive();
+		// Simple pass each argument as an argument to the shell.
+		for(int carg = 0; carg < argc; carg++)
+		{
+			args.push_back(UPString(argv[carg]));
+		}
+
+		// Set up sigint handler
+		signal(SIGINT, break_machine);
+
+		// Set arguments to the ones just built from the passed in argv
+		runtime.SetArgs(args);
+		runtime.modeset_Interactive();
 	
-	// Start the shell
-	runtime.Run();
+		// Start the shell
+		runtime.Run();
+
+	}
+	catch (const fpga_result& e) 
+	{
+		fprintf(stderr, "cload: Error when allocating FPGA.\n");
+	}
+	catch(const opae::fpga::types::no_driver& e)
+	{
+		fprintf(stderr, "cload: error no FPGA drivers found.\n");
+		fprintf(stderr, "Make sure that an FPGA device which cload can use is available and flashed.\n");
+		return -1;
+	}
 
 	return 0;
 }
