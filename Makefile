@@ -39,7 +39,7 @@ $(BIN_DIR)/class: $(LIB_DIR)/libmtcore.a $(SHELL_MAIN) $(INCLUDE)
 	cd build; $(CC) $(SHELL_MAIN) $(LIB) -o ../$@
 
 $(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
-	cd build; $(CC) $(CLOAD_MAIN) $(LIB) $(LIB_CLOAD) -o ../$@
+	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD) -o ../$@
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
