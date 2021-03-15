@@ -49,6 +49,7 @@ int main(int argc, char ** argv)
 
 	try
 	{
+
 		priscas::Shell_Cload runtime;
 		h_runtime = &runtime;
 

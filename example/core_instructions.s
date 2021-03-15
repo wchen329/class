@@ -59,4 +59,3 @@ sll $zero, $zero, 0 ; No-op
 sll $zero, $zero, 0 ; No-op
 sll $zero, $zero, 0 ; No-op
 sll $zero, $zero, 0 ; No-op
-.exit
