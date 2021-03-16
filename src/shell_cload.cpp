@@ -162,7 +162,6 @@ namespace priscas
 	{
 		// Set mmem's AFU pointer
 		Mem().setAFU(&afu);
-/*
 		// Set up jump table for runtime directives
 		directives.insert(directive_pair(".exit", priscas::exit));
 		directives.insert(directive_pair(".run", priscas::go));
@@ -172,6 +171,5 @@ namespace priscas
 		directives.insert(directive_pair(".mem", priscas::mem));
 		directives.insert(directive_pair(".resize", priscas::resize));
 		directives.insert(directive_pair(".wait", priscas::wait));
-*/
 	}
 }

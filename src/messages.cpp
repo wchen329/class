@@ -34,6 +34,7 @@ namespace priscas
 								std::string(".mem - show main memory size, or take a peek at memory\n") +
 								std::string(".wait - wait on a condition before performing the next option\n") +
 								std::string(".resize - resize the available host memory\n") +
+								std::string(".run - enable memory controller\n") +
 								std::string("For more help on specific commands use \"help [command]\" (for example .help .rst)\n");
 	const char * BAD_COMMAND = "Unknown command. For more information on acceptable commands type \".help\".\n" ;  // bad command message
 	const char * BAD_FORMAT = "Bad or unsupported register format.\n";
