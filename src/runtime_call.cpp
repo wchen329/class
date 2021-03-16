@@ -142,6 +142,11 @@ namespace priscas
 				msg = HELP_RESIZE;
 			}
 
+			else if(args[1] == ".run")
+			{
+				msg = HELP_RUN;
+			}
+
 			inst.WriteToOutput(msg.c_str());
 		}
 	}

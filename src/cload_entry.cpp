@@ -33,6 +33,7 @@
 
 #include "shell_cload.h"
 
+#include <memory>
 #include <opae/utils.h>
 
 priscas::Shell_Cload * h_runtime;
@@ -50,8 +51,10 @@ int main(int argc, char ** argv)
 	try
 	{
 
-		priscas::Shell_Cload runtime;
-		h_runtime = &runtime;
+		std::unique_ptr<Shell_Cload> runtime_inst(new Shell_Cload);
+		h_runtime = runtime_inst.get();
+
+		Shell_Cload& runtime = *runtime_inst;
 
 		Arg_Vec args; // Arguments to Simulator Runtime
 

@@ -85,6 +85,10 @@ namespace priscas
 	const std::string HELP_TIME =	std::string(".time\n") +
 									std::string("Print out information about timing information\n");
 
+	const UPString HELP_RUN = UPString(".run\n") + UPString("When the AFU first boots up, the memory controller is blocked from\n") +
+		UPString("performing any operations, to prevent it from corrupting host memory.\n") + UPString("When you are done loading your instruction code with .sr\n") +
+		UPString("use .run to unblock the memory controller, allowed the CPU to fetch instructions.\n");
+
 	const UPString HELP_SR = UPString(".sr\n") +
 		UPString("[no args] - doesn't do anything\n") +
 		UPString("-r pathtofile [-bige] address: flattens file, beginning at address\n\tSpecify bige to interpret as big endian.\n") +

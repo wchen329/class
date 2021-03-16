@@ -294,8 +294,12 @@ namespace priscas
 		return str_vec;
 	}
 
-	Shell::Shell() : isQuiet(false), inst_file(nullptr), tw_error(&priscas_io::null_tstream),
-		tw_output(&priscas_io::null_tstream), tw_input(&priscas_io::null_tstream), NoConsoleOutput(false),
+	Shell::Shell() :
+		isQuiet(false),
+		inst_file(nullptr), tw_error(&priscas_io::null_tstream),
+		tw_output(&priscas_io::null_tstream),
+		tw_input(&priscas_io::null_tstream),
+		NoConsoleOutput(false),
 		hasAsmInput(false)
 	{
 	}
