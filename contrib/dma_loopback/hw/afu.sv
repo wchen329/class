@@ -108,6 +108,27 @@ module afu
    wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
    wire local_dma_re, local_dma_we;
 
+   wire [1:0] mem_op;
+   wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cpu_addr;
+   wire tx_done;
+   wire ready;
+   wire rd_valid;
+
+   wire cpu_in[31:0];
+   wire cpu_out[31:0]; // Todo, parameterize
+
+   cpu
+   (
+       .clk(clk),
+       .rst(~rst_n),
+       .tx_done(tx_done),
+       .rd_valid(rd_valid),
+       .op(mem_op),
+       .io_address()
+       .common_data_bus_in(cpu_in),
+       .common_data_bus_out(cpu_out)
+   );
+
    // Memory Controller module
    mem_ctrl
    (
@@ -116,17 +137,17 @@ module afu
        .host_init(go),
        .host_rd_ready(~dma.empty),
        .host_wr_ready(~dma.full),
-       .op(), // CPU Defined
-       .raw_address(), // Address in the CPU space
+       .op(mem_op), // CPU Defined
+       .raw_address(cpu_addr), // Address in the CPU space
        .address_offset(wr_addr),
-       .common_data_bus_read_in(), // CPU data word bus, input
-       .common_data_bus_write_out(),
+       .common_data_bus_read_in(cpu_out), // CPU data word bus, input
+       .common_data_bus_write_out(cpu_in),
        .host_data_bus_read_in(dma.rd_data),
        .host_data_bus_write_out(dma.wr_data),
        .corrected_address(final_addr)
-       .ready(), // Usable for the host CPU
-       .tx_done(), // Again, notifies CPU when ever a read or write is complete
-       .rd_valid(), // Notifies CPU whenever the data on the databus is valid
+       .ready(ready), // Usable for the host CPU
+       .tx_done(tx_done), // Again, notifies CPU when ever a read or write is complete
+       .rd_valid(rd_valid), // Notifies CPU whenever the data on the databus is valid
        .host_re(local_dma_re),
        .host_we(local_dma_we)
    )
