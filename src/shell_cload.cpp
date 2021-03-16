@@ -165,6 +165,7 @@ namespace priscas
 
 		// Set up jump table for runtime directives
 		directives.insert(directive_pair(".exit", priscas::exit));
+		directives.insert(directive_pair(".go", priscas::go));
 		directives.insert(directive_pair(".help", priscas::help_loader));
 		directives.insert(directive_pair(".rst", priscas::reset));
 		directives.insert(directive_pair(".sr", priscas::sr));

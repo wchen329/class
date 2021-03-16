@@ -488,4 +488,9 @@ namespace priscas
 			inst.WriteToOutput("Memory space succesfully resized.\n");
 		}
 	}
+
+	void go(const Arg_Vec& args, Shell_Cload& inst)
+	{
+		inst.enableMemCntrl();
+	}
 }
