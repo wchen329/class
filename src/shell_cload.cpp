@@ -125,6 +125,7 @@ namespace priscas
 				Shell::WriteToOutput(">> ");
 
 				const UPString& val = this->ReadFromInput();
+				UPString_Vec chopped = chop_string(val);
 			
 
 				if(val.size() == 0)
@@ -136,7 +137,6 @@ namespace priscas
 				{
 					try
 					{
-						UPString_Vec chopped = chop_string(val);
 						Shell_Cload::execute_runtime_directive(chopped);
 					}
 			
