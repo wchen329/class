@@ -77,6 +77,7 @@ namespace priscas
 			while(fgets(input_f_stream, MAX_SIZE - 1, fscript) != nullptr)
 			{
 				UPString val = UPString(input_f_stream);
+				UPString_Vec chopped = chop_string(val);
 
 				if(val.size() == 0)
 				{
@@ -87,7 +88,6 @@ namespace priscas
 				{
 					try
 					{
-						UPString_Vec chopped = chop_string(val);
 						Shell_Cload::execute_runtime_directive(chopped);
 					}
 			
@@ -98,9 +98,12 @@ namespace priscas
 				}
 				else
 				{
-					UPString_Vec args;
-					args.push_back(".help");
-					Shell_Cload::execute_runtime_directive(args);
+					if(!chopped.empty())
+					{
+						UPString_Vec args;
+						args.push_back(".help");
+						Shell_Cload::execute_runtime_directive(args);
+					}
 				}
 			}
 
@@ -144,9 +147,12 @@ namespace priscas
 				}
 				else
 				{
-					UPString_Vec args;
-					args.push_back(".help");
-					Shell_Cload::execute_runtime_directive(args);
+					if(!chopped.empty())
+					{
+						UPString_Vec args;
+						args.push_back(".help");
+						Shell_Cload::execute_runtime_directive(args);
+					}
 				}
 
 			}
