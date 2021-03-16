@@ -95,7 +95,7 @@ module memory_map
          if (mmio.wr_en == 1'b1) begin
             case (mmio.wr_addr)
               16'h0050: go       <= mmio.wr_data[0];
-	      16'h0052: rd_addr  <= mmio.wr_data[$size(rd_addr)-1:0];
+	      16'h0052: wr_addr  <= mmio.wr_data[$size(wr_addr)-1:0];
 	      16'h0054: wr_addr  <= mmio.wr_data[$size(wr_addr)-1:0];
 	      16'h0056: size     <= mmio.wr_data[$size(size)-1:0];
             endcase
