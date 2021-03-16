@@ -105,11 +105,11 @@ module afu
        )
      memory_map (.*);
 
-   wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
    wire local_dma_re, local_dma_we;
 
    wire [1:0] mem_op;
    wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cpu_addr;
+   wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
    wire tx_done;
    wire ready;
    wire rd_valid;
@@ -124,7 +124,7 @@ module afu
        .tx_done(tx_done),
        .rd_valid(rd_valid),
        .op(mem_op),
-       .io_address()
+       .io_address(cpu_addr)
        .common_data_bus_in(cpu_in),
        .common_data_bus_out(cpu_out)
    );
