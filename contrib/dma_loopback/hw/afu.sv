@@ -124,7 +124,7 @@ module afu
        .tx_done(tx_done),
        .rd_valid(rd_valid),
        .op(mem_op),
-       .io_address(cpu_addr)
+       .io_address(cpu_addr),
        .common_data_bus_in(cpu_in),
        .common_data_bus_out(cpu_out)
    );
@@ -144,7 +144,7 @@ module afu
        .common_data_bus_write_out(cpu_in),
        .host_data_bus_read_in(dma.rd_data),
        .host_data_bus_write_out(dma.wr_data),
-       .corrected_address(final_addr)
+       .corrected_address(final_addr),
        .ready(ready), // Usable for the host CPU
        .tx_done(tx_done), // Again, notifies CPU when ever a read or write is complete
        .rd_valid(rd_valid), // Notifies CPU whenever the data on the databus is valid
