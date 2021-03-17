@@ -163,8 +163,8 @@ module afu
 
    // Start both the read and write channels when the MMIO go is received.
    // Note that writes don't actually occur until dma.wr_en is asserted.
-   assign dma.rd_go = local_dma_re;
-   assign dma.wr_go = local_dma_we;
+   assign dma.rd_go = go;
+   assign dma.wr_go = go;
 
    // Read from the DMA when there is data available (!dma.empty) and when
    // it is safe to write data (!dma.full).
