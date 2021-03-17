@@ -100,7 +100,7 @@ module mem_ctrl
 
 			HOSTOP: begin
 
-				if(op == WRITE && host_wr_ready) begin
+				if(op == WRITE) begin
 					if(host_wr_ready) begin
 						// Write
 						/* Here, we should just write the data and then
