@@ -109,7 +109,7 @@ module afu
 
    wire [1:0] mem_op;
    wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cpu_addr;
-   wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
    wire tx_done;
    wire ready;
    wire rd_valid;
@@ -150,7 +150,7 @@ module afu
        .rd_valid(rd_valid), // Notifies CPU whenever the data on the databus is valid
        .host_re(local_dma_re),
        .host_we(local_dma_we)
-   )
+   );
 
 
    // Assign the starting addresses from the memory map.
