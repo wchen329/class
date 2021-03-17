@@ -114,13 +114,13 @@ module afu
    wire ready;
    wire rd_valid;
 
-   wire cpu_in[31:0];
-   wire cpu_out[31:0]; // Todo, parameterize
+   wire [31:0] cpu_in;
+   wire [31:0] cpu_out; // Todo, parameterize
 
    cpu
    (
        .clk(clk),
-       .rst(~rst_n),
+       .rst_n(~rst),
        .tx_done(tx_done),
        .rd_valid(rd_valid),
        .op(mem_op),
@@ -133,7 +133,7 @@ module afu
    mem_ctrl
    (
        .clk(clk),
-       .rst(~rst_n),
+       .rst_n(~rst),
        .host_init(go),
        .host_rd_ready(~dma.empty),
        .host_wr_ready(~dma.full),
