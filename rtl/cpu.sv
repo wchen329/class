@@ -54,7 +54,11 @@ module cpu
 		end
 		else begin
 			for(integer i = 0; i < 16; ++i)
-				line_buffer[i] <= common_data_bus_in;
+			begin
+				if(fill_count == i)
+					line_buffer[i] <= common_data_bus_in;
+
+			end
 		case(state)
 			READ: begin
 				if(tx_done) begin
