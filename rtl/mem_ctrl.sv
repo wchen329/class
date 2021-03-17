@@ -41,7 +41,9 @@ module mem_ctrl
 	output logic tx_done,
 	output logic rd_valid,
 	output logic host_re, // might need since controls fifo shifting...
-	output logic host_we
+	output logic host_we,
+	output logic host_rgo,
+	output logic host_wgo
 );
 	localparam FILL_COUNT = CL_SIZE_WIDTH / WORD_SIZE;
 	localparam FILL_BITS = $clog2(FILL_COUNT);
@@ -89,6 +91,8 @@ module mem_ctrl
 		ready = 1'b1;
 		host_re = 1'b0;
 		host_we = 1'b0;
+		host_rgo = 1'b0;
+		host_wgo = 1'b0;
 		rd_valid = 1'b0;
 
 		case(state)
@@ -101,14 +105,14 @@ module mem_ctrl
 			HOSTOP: begin
 
 				if(op == WRITE) begin
+					host_wgo = 1'b1;
+
 					if(host_wr_ready) begin
 						// Write
 						/* Here, we should just write the data and then
 						 * return to READY when done
 						 */
 						tx_done = 1'b1;
-					end
-					else begin
 						host_we = 1'b1;
 					end
 				end	
@@ -116,7 +120,10 @@ module mem_ctrl
 				// Read
 				/* Just fill the cache line buffer with a single read
 				 */
-					host_re = 1'b1;
+					host_rgo = 1'b1;
+					if(host_rd_ready) begin
+						host_re = 1'b1;
+					end
 				end
 			end
 				
