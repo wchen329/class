@@ -45,7 +45,7 @@ module cpu_tb();
 	// Assign aliases
 	assign common_data_bus_read_in = common_data_bus_out;
 	assign common_data_bus_in = common_data_bus_write_out;
-	assign io_address = corrected_address;
+	assign raw_address = io_address;
 
 	initial begin
 
@@ -57,7 +57,6 @@ module cpu_tb();
 		host_wr_ready = '1;
 		host_data_bus_read_in = -512'd1;
 		op = '0;
-		raw_address = '0;
 		address_offset = '0;
 
 		repeat (10) @(posedge clk);
