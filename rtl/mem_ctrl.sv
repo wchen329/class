@@ -69,7 +69,7 @@ module mem_ctrl
 	// State Elements
 	sm_state state;
 	logic [FILL_BITS-1:0] fill_count;
-	reg [CL_SIZE_WIDTH-1:0] line_buffer;
+	logic [CL_SIZE_WIDTH-1:0] line_buffer;
 
 	logic [WORD_SIZE-1:0] line_out [FILL_COUNT-1:0];
 
@@ -100,14 +100,16 @@ module mem_ctrl
 
 			HOSTOP: begin
 
-				if(op == WRITE && host_wr_ready) begin
-				// Write
-				/* Here, we should just write the data and then
-				 * return to READY when done
-				 */
-					tx_done = 1'b1;
+				if(op == WRITE) begin
 					host_we = 1'b1;
-				end	
+					if(host_wr_ready) begin
+					// Write
+					/* Here, we should just write the data and then
+					 * return to READY when done
+					 */
+						tx_done = 1'b1;
+					end	
+				end
 				else if(op == READ) begin
 				// Read
 				/* Just fill the cache line buffer with a single read
@@ -141,67 +143,65 @@ module mem_ctrl
 			line_buffer <= '0;
 		end
 
-		else begin
-			case(state)
-				STARTUP: begin
-					if(host_init) begin
-						// We've init'd, we can go start servicing
-						state <= READY;
-					end
+		case(state)
+			STARTUP: begin
+				if(host_init) begin
+					// We've init'd, we can go start servicing
+					state <= READY;
 				end
+			end
 
-				READY: begin
-					if(op_in == READ) begin
+			READY: begin
+				if(op_in == READ) begin
+					state <= HOSTOP;
+				end
+				else if(op_in == WRITE) begin
+					state <= FILL;
+				end
+			end
+
+			FILL: begin
+				// We fill until we can fill no more!
+				// TODO: clean this up through logical simplification
+				if(&fill_count == 1'b1) begin
+					fill_count <= '0;
+
+					if(op_in == WRITE) begin
 						state <= HOSTOP;
+						line_buffer <= {common_data_bus_read_in, line_buffer[CL_SIZE_WIDTH-1:WORD_SIZE]};					
 					end
-					else if(op_in == WRITE) begin
-						state <= FILL;
-					end
-				end
-
-				FILL: begin
-					// We fill until we can fill no more!
-					// TODO: clean this up through logical simplification
-					if(&fill_count == 1'b1) begin
-						fill_count <= '0;
-
-						if(op_in == WRITE) begin
-							state <= HOSTOP;
-							line_buffer <= {common_data_bus_read_in, line_buffer[CL_SIZE_WIDTH-1:WORD_SIZE]};					
-						end
-						else if(op_in == READ) begin
-							state <= READY;
-						end
-					end
-					else begin
-						// If we are writing, fill the line buffer with
-						// data from common data bus read in
-						if(op_in == WRITE) begin
-							line_buffer <= {common_data_bus_read_in, line_buffer[CL_SIZE_WIDTH-1:WORD_SIZE]};					
-						end
-						fill_count <= fill_count + 1;
-					end
-				end
-
-				HOSTOP: begin
-					if(op == READ && host_rd_ready) begin
-						// Read
-						line_buffer <= host_data_bus_read_in;
-						state <= FILL;
-					end
-					else if(op == WRITE && host_wr_ready) begin
-						// Write
-						/* Here, we should just write the data and then
-						 * return to READY when done
-						 */
+					else if(op_in == READ) begin
 						state <= READY;
 					end
 				end
-
-				default begin
+				else begin
+					// If we are writing, fill the line buffer with
+					// data from common data bus read in
+					if(op_in == WRITE) begin
+						line_buffer <= {common_data_bus_read_in, line_buffer[CL_SIZE_WIDTH-1:WORD_SIZE]};					
+					end
+					fill_count <= fill_count + 1;
 				end
-			endcase
-		end
+			end
+
+			HOSTOP: begin
+				if(op == READ && host_rd_ready) begin
+					// Read
+					line_buffer <= host_data_bus_read_in;
+					state <= FILL;
+				end
+				else if(op == WRITE && host_wr_ready) begin
+					// Write
+					/* Here, we should just write the data and then
+					 * return to READY when done
+					 */
+					state <= READY;
+				end
+			end
+
+			default begin
+			end
+		endcase
 	end
 
 	// Continuous Assigns
