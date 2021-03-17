@@ -113,6 +113,8 @@ module afu
    wire tx_done;
    wire ready;
    wire rd_valid;
+   wire rd_go;
+   wire wr_go;
 
    wire [31:0] cpu_in;
    wire [31:0] cpu_out; // Todo, parameterize
@@ -149,7 +151,9 @@ module afu
        .tx_done(tx_done), // Again, notifies CPU when ever a read or write is complete
        .rd_valid(rd_valid), // Notifies CPU whenever the data on the databus is valid
        .host_re(local_dma_re),
-       .host_we(local_dma_we)
+       .host_we(local_dma_we),
+       .host_rgo(rd_go),
+       .host_wgo(wr_go)
    );
 
 
@@ -163,8 +167,8 @@ module afu
 
    // Start both the read and write channels when the MMIO go is received.
    // Note that writes don't actually occur until dma.wr_en is asserted.
-   assign dma.rd_go = go;
-   assign dma.wr_go = go;
+   assign dma.rd_go = rd_go;
+   assign dma.wr_go = wr_go;
 
    // Read from the DMA when there is data available (!dma.empty) and when
    // it is safe to write data (!dma.full).
