@@ -101,12 +101,16 @@ module mem_ctrl
 			HOSTOP: begin
 
 				if(op == WRITE && host_wr_ready) begin
-				// Write
-				/* Here, we should just write the data and then
-				 * return to READY when done
-				 */
-					tx_done = 1'b1;
-					host_we = 1'b1;
+					if(host_wr_ready) begin
+						// Write
+						/* Here, we should just write the data and then
+						 * return to READY when done
+						 */
+						tx_done = 1'b1;
+					end
+					else begin
+						host_we = 1'b1;
+					end
 				end	
 				else if(op == READ) begin
 				// Read
