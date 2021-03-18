@@ -26,6 +26,7 @@
 #include <vector>
 #include "mt_exception.h"
 #include "priscas_global.h"
+#include "ustrop.h"
 
 namespace priscas
 {

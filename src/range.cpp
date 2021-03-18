@@ -57,16 +57,10 @@ namespace priscas
 			throw priscas::mt_invalid_range("Must have either 1 - 3 parameters in the format index, begin:end, or begin:end:step.");
 		}
 		
-		// Then just convert. If zero, check that it's REALLY zero
+		// Then just convert.
 		for(size_t itr_2 = 0; itr_2 < string_list.size(); itr_2++)
 		{
-			errno = 0;
-			long val = strtol(string_list[itr_2].c_str(), nullptr, 10);
-			if(errno != 0)
-			{
-				throw std::exception();
-			}
-
+			unsigned long val = StrOp::StrToUInt64(string_list[itr_2]);
 			bound_list.push_back(val);
 		}
 
