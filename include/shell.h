@@ -30,7 +30,6 @@
 #include "env.h"
 #include "ISA.h"
 #include "mips.h"
-#include "mmem.h"
 #include "mtsstream.h"
 #include "primitives.h"
 #include "priscas_global.h"
@@ -41,16 +40,7 @@
 
 namespace priscas
 {
-	class Shell;
-}
-#include "runtime_call.h"
 
-namespace priscas
-{
-
-	/* A mapping from a string into a directive function pointer (must be a member of Shell)
-	 */
-	typedef std::pair<std::string, void(*)(const Arg_Vec &, Shell&)> directive_pair;
 
 	/* Divides a string based on whitespace, tabs, commas and newlines
 	 * Acknowledges escaping \ and quotes
@@ -94,15 +84,11 @@ namespace priscas
 			void setInputTextStream(priscas_io::text_stream & ts) { this->tw_input = &ts; }
 			void setNoConsoleOutput(bool torf) { this->NoConsoleOutput = torf; }
 
-			mmem& Mem() { return m_zone; }
 			std::string getLineAtPC(unsigned long pc) {return this->PC_to_line_string.count(pc) > 0 ? this->PC_to_line_string[pc] : "???";}
 			~Shell() { if(this->inst_file != nullptr) fclose(inst_file); }
 			Shell();
 		protected:
-			void execute_runtime_directive(std::vector<std::string>& args_list);
-			std::map<std::string, void(*)(const Arg_Vec&, Shell& shell)> directives;
 			std::vector<std::string> args;
-
 
 			// The environment which the shell wraps around
 			Env shEnv;
@@ -124,7 +110,7 @@ namespace priscas
 			void trim_label(UPString& strin);
 
 
-			// Runtime Directives, run through the shell
+			// Symbol Tables
 			std::map<unsigned long, unsigned long> program_breakpoints;
 			std::map<unsigned long, unsigned long> PC_to_line_number;
 			std::map<unsigned long, unsigned long> line_number_to_PC;
@@ -132,14 +118,10 @@ namespace priscas
 			std::map<unsigned long, bool> microarch_breakpoints;
 			std::queue<unsigned long> queued_prog_breakpoints;
 			priscas::syms_table jump_syms;
-			priscas::mono_syms_table directive_syms;
 			bool has_ma_break_at(unsigned long line){ return this->microarch_breakpoints.count(line) > 0; }
 			bool has_prog_break_at(unsigned long line){ return this->program_breakpoints.count(line) > 0; }
 
 			Program prog;
-
-			// Loader stuff
-			mmem m_zone;
 	};
 }
 

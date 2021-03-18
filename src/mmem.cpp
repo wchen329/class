@@ -22,12 +22,11 @@
 
 namespace priscas
 {
-	byte_8b& mmem::operator[](ptrdiff_t ind)
-	{
+	volatile byte_8b& mmem::operator[](ptrdiff_t ind) {
 		return data[ind];
 	}
 
-	const byte_8b& mmem::operator[](ptrdiff_t ind) const
+	const volatile byte_8b& mmem::operator[](ptrdiff_t ind) const
 	{
 		return data[ind];
 	}
@@ -77,7 +76,8 @@ namespace priscas
 		while(count < (end-begin))
 		{
 			offset = (begin + count) % size;
-			fwrite(this->data + offset, sizeof(byte_8b), 1, f);
+			byte_8b buf = data[offset];
+			fwrite(&buf, sizeof(byte_8b), 1, f);
 			++count;
 		}
 	}
@@ -89,8 +89,10 @@ namespace priscas
 		uint64_t offset = 0;
 		do
 		{
+			byte_8b buf = 0;
 			uint64_t where = (begin + offset) % size;
-			read_count = fread(this->data + where, sizeof(byte_8b), 1, f);
+			read_count = fread(&buf, sizeof(byte_8b), 1, f);
+			data[where] = buf;
 			++offset;
 		}
 		while(read_count);
@@ -98,7 +100,12 @@ namespace priscas
 
 	void mmem::reset()
 	{
-		memset(data, 0, size);
+		// Can't use memset because of volatile
+		// Do this slow iterative reset...
+		for(size_t itr = 0; itr < this->size; ++itr)
+		{
+			data[itr] = 0x0;
+		}
 	}
 
 	void mmem::alloc(size_t bytes)
@@ -106,16 +113,28 @@ namespace priscas
 		// Can change allocator
 		// Throw std::bad_alloc, potentially
 		// Could also use new...
-		this->data = static_cast<byte_8b*>(malloc(bytes));
+		this->data = (afu->malloc<byte_8b>(bytes));
 		if(data == nullptr)
 		{
 			throw std::bad_alloc();
 		}
 
+		// When allocating, we have to write the array
+		// starting address out
+		afu->write(MMIO_BASE_ADDR, reinterpret_cast<uint64_t>(this->data));
+		afu->write(MMIO_SIZE, 1);
+
 	}
 
 	void mmem::dealloc()
 	{
-		free(this->data);
+		if(this->data != nullptr)
+		{
+			// Declare the below memory hierarchy as invalid
+			afu->write(MMIO_BASE_ADDR, 0x0);
+
+			// Deallocate array
+			afu->free(this->data);
+		}
 	}
 }

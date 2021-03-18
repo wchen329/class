@@ -1,20 +1,27 @@
 .SUFFIXES: .o .cpp
 CC = g++
-VPATH = src:build
+VPATH = src:build:contrib/dma_loopback/sw
 BIN_DIR = bin
 LIB_DIR = build
-CFLAGS = -g -I"$(INCLUDE)"
+CFLAGS = -g -I"$(INCLUDE)" -I"$(INCLUDE_CONTRIB)"
 OBJS =  env.o messages.o mips.o mtsstream.o \
-	range.o runtime_call.o program.o \
+	range.o program.o \
 	shell.o streams.o syms_table.o priscas_osi.o \
-	ISA_desc.o ustrop.o shell_cload.o mmem.o
+	ISA_desc.o ustrop.o
+CLOAD_OBJS = AFU.o shell_cload.o runtime_call.o mmem.o
 SHELL_MAIN = shell_entry.o
 ISA_GEN_MAIN = ISA_gen.o
-CLOAD_MAIN = cload.o
+CLOAD_MAIN = cload_entry.o
 INCLUDE = include
+INCLUDE_CONTRIB = contrib/dma_loopback/sw
 LIB = -L. -lmtcore
+LIB_CLOAD = -lopae-c -luuid -lopae-cxx-core -lMPF-cxx -lMPF
 
-all: $(LIB_DIR)/libmtcore.a $(BIN_DIR)/class $(BIN_DIR)/cload
+all: $(LIB_DIR)/libmtcore.a class cload
+
+class: $(BIN_DIR)/class
+
+cload: $(BIN_DIR)/cload
 
 build/libmtcore.a: $(OBJS)
 	cd build; ar r libmtcore.a $(OBJS)
@@ -31,14 +38,14 @@ $(BIN_DIR)/class: $(LIB_DIR)/libmtcore.a $(SHELL_MAIN) $(INCLUDE)
 	fi
 	cd build; $(CC) $(SHELL_MAIN) $(LIB) -o ../$@
 
-$(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(INCLUDE)
-	cd build; $(CC) $(CLOAD_MAIN) $(LIB) -o ../$@
+$(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
+	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD) -o ../$@
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
 	mv $*.o build 
 release:
-	$(MAKE) all CFLAGS="-O3 -I\"$(INCLUDE)\" -DP_RELEASE"
+	$(MAKE) all CFLAGS="-O3 -I\"$(INCLUDE)\" -I"$(INCLUDE_CONTRIB)" -DP_RELEASE"
 clean:
 	@if \
 		rm build/*.o; \

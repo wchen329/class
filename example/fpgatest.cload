@@ -1,0 +1,6 @@
+; FPGA Test
+; -
+; This is a simple test to see if, after instantiation, a simple AFu
+; can write some data back to host memory
+.rst
+.wait 0x0 1 0 ; Wait for the FPGA to write the value "1" to the host memory

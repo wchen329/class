@@ -34,6 +34,7 @@ namespace priscas
 								std::string(".mem - show main memory size, or take a peek at memory\n") +
 								std::string(".wait - wait on a condition before performing the next option\n") +
 								std::string(".resize - resize the available host memory\n") +
+								std::string(".run - enable memory controller\n") +
 								std::string("For more help on specific commands use \"help [command]\" (for example .help .rst)\n");
 	const char * BAD_COMMAND = "Unknown command. For more information on acceptable commands type \".help\".\n" ;  // bad command message
 	const char * BAD_FORMAT = "Bad or unsupported register format.\n";
@@ -84,6 +85,10 @@ namespace priscas
 									std::string(".state 0:4:2 # will print states of registers 0, 2, 4\n");
 	const std::string HELP_TIME =	std::string(".time\n") +
 									std::string("Print out information about timing information\n");
+
+	const UPString HELP_RUN = UPString(".run\n") + UPString("When the AFU first boots up, the memory controller is blocked from\n") +
+		UPString("performing any operations, to prevent it from corrupting host memory.\n") + UPString("When you are done loading your instruction code with .sr\n") +
+		UPString("use .run to unblock the memory controller, allowed the CPU to fetch instructions.\n");
 
 	const UPString HELP_SR = UPString(".sr\n") +
 		UPString("[no args] - doesn't do anything\n") +

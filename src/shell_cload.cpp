@@ -77,6 +77,7 @@ namespace priscas
 			while(fgets(input_f_stream, MAX_SIZE - 1, fscript) != nullptr)
 			{
 				UPString val = UPString(input_f_stream);
+				UPString_Vec chopped = chop_string(val);
 
 				if(val.size() == 0)
 				{
@@ -87,8 +88,7 @@ namespace priscas
 				{
 					try
 					{
-						UPString_Vec chopped = chop_string(val);
-						Shell::execute_runtime_directive(chopped);
+						Shell_Cload::execute_runtime_directive(chopped);
 					}
 			
 					catch(priscas::mt_exception & e)
@@ -98,9 +98,12 @@ namespace priscas
 				}
 				else
 				{
-					UPString_Vec args;
-					args.push_back(".help");
-					Shell::execute_runtime_directive(args);
+					if(!chopped.empty())
+					{
+						UPString_Vec args;
+						args.push_back(".help");
+						Shell_Cload::execute_runtime_directive(args);
+					}
 				}
 			}
 
@@ -122,6 +125,7 @@ namespace priscas
 				Shell::WriteToOutput(">> ");
 
 				const UPString& val = this->ReadFromInput();
+				UPString_Vec chopped = chop_string(val);
 			
 
 				if(val.size() == 0)
@@ -133,8 +137,7 @@ namespace priscas
 				{
 					try
 					{
-						UPString_Vec chopped = chop_string(val);
-						Shell::execute_runtime_directive(chopped);
+						Shell_Cload::execute_runtime_directive(chopped);
 					}
 			
 					catch(priscas::mt_exception & e)
@@ -144,9 +147,12 @@ namespace priscas
 				}
 				else
 				{
-					UPString_Vec args;
-					args.push_back(".help");
-					Shell::execute_runtime_directive(args);
+					if(!chopped.empty())
+					{
+						UPString_Vec args;
+						args.push_back(".help");
+						Shell_Cload::execute_runtime_directive(args);
+					}
 				}
 
 			}
@@ -157,14 +163,19 @@ namespace priscas
 
 	// Set up list of runtime directives
 	Shell_Cload::Shell_Cload() :
-		Shell()
+		Shell(),
+		afu(AFU_ACCEL_UUID)
 	{
+		// Set mmem's AFU pointer
+		Mem().setAFU(&afu);
 		// Set up jump table for runtime directives
-		Shell::directives.insert(directive_pair(".help", priscas::help_loader));
-		Shell::directives.insert(directive_pair(".rst", priscas::reset));
-		Shell::directives.insert(directive_pair(".sr", priscas::sr));
-		Shell::directives.insert(directive_pair(".mem", priscas::mem));
-		Shell::directives.insert(directive_pair(".resize", priscas::resize));
-		Shell::directives.insert(directive_pair(".wait", priscas::wait));
+		directives.insert(directive_pair(".exit", priscas::exit));
+		directives.insert(directive_pair(".run", priscas::go));
+		directives.insert(directive_pair(".help", priscas::help_loader));
+		directives.insert(directive_pair(".rst", priscas::reset));
+		directives.insert(directive_pair(".sr", priscas::sr));
+		directives.insert(directive_pair(".mem", priscas::mem));
+		directives.insert(directive_pair(".resize", priscas::resize));
+		directives.insert(directive_pair(".wait", priscas::wait));
 	}
 }

@@ -12,3 +12,6 @@ Other useful targets:
 #### `all` - the default target, builds the `class` executable and `cload` executable with debugging symbols and no optimization (debug)
 #### `clean` - clean the solution, remove executables and objects
 #### `release` - build the project as a release (that is, without debugging symbols and with optimization on)
+
+## Acknowledgments
+To implement Intel DevCloud capability, this project also makes use of code from University of Florida intel-training-modules (GPLv3 licensed, in the contrib folder).

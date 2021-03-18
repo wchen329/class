@@ -28,24 +28,25 @@
 #include "priscas_osi.h"
 #include "priscas_global.h"
 #include "range.h"
-#include "shell.h"
+#include "shell_cload.h"
 #include "streams.h"
 #include "ustrop.h"
 
 namespace priscas
 {
-	// For the Shell
-	void breakpoint(const Arg_Vec & args, Shell& inst);
-	void exit(const Arg_Vec & args, Shell& inst);
-	void help(const Arg_Vec & args, Shell& inst);
+	// For the Shell_Cload
+	void breakpoint(const Arg_Vec & args, Shell_Cload& inst);
+	void exit(const Arg_Vec & args, Shell_Cload& inst);
+	void help(const Arg_Vec & args, Shell_Cload& inst);
 
 	// For the Loader
-	void help_loader(const Arg_Vec& args, Shell& inst);
-	void reset(const Arg_Vec& args, Shell& inst);
-	void sr(const Arg_Vec& args, Shell& inst);
-	void mem(const Arg_Vec& args, Shell& inst);
-	void wait(const Arg_Vec& args, Shell& inst);
-	void resize(const Arg_Vec& args, Shell& inst);
+	void help_loader(const Arg_Vec& args, Shell_Cload& inst);
+	void reset(const Arg_Vec& args, Shell_Cload& inst);
+	void sr(const Arg_Vec& args, Shell_Cload& inst);
+	void mem(const Arg_Vec& args, Shell_Cload& inst);
+	void wait(const Arg_Vec& args, Shell_Cload& inst);
+	void resize(const Arg_Vec& args, Shell_Cload& inst);
+	void go(const Arg_Vec& args, Shell_Cload& inst);
 }
 
 #endif

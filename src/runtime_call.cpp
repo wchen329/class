@@ -24,7 +24,7 @@
 namespace priscas
 {
 
-	void Shell::execute_runtime_directive(std::vector<std::string>& args_list)
+	void Shell_Cload::execute_runtime_directive(std::vector<std::string>& args_list)
 	{
 		if(args_list.size() < 1)
 		{
@@ -48,18 +48,18 @@ namespace priscas
 		}
 	}
 
-	void breakpoint(const Arg_Vec & args, Shell& inst)
+	void breakpoint(const Arg_Vec & args, Shell_Cload& inst)
 	{
 		inst.WriteToOutput(("[Breakpoint]\n"));
 		inst.WriteToOutput("Not yet implemented.\n");
 	}
 
-	void exit(const Arg_Vec & args, Shell& inst)
+	void exit(const Arg_Vec & args, Shell_Cload& inst)
 	{
 		inst.modeset_Shutdown();
 	}
 
-	void help(const Arg_Vec & args, Shell& inst)
+	void help(const Arg_Vec & args, Shell_Cload& inst)
 	{
 		inst.WriteToOutput(("[Help]\n"));
 
@@ -93,7 +93,7 @@ namespace priscas
 		}
 	}
 
-	void help_loader(const Arg_Vec & args, Shell& inst)
+	void help_loader(const Arg_Vec & args, Shell_Cload& inst)
 	{
 		inst.WriteToOutput(("[Help]\n"));
 
@@ -142,11 +142,16 @@ namespace priscas
 				msg = HELP_RESIZE;
 			}
 
+			else if(args[1] == ".run")
+			{
+				msg = HELP_RUN;
+			}
+
 			inst.WriteToOutput(msg.c_str());
 		}
 	}
 
-	void reset(const Arg_Vec & args, Shell& inst)
+	void reset(const Arg_Vec & args, Shell_Cload& inst)
 	{
 		bool reset_afu = false;
 		bool reset_host = false;
@@ -179,8 +184,8 @@ namespace priscas
 		// Perform resets.
 		if(reset_afu)
 		{
-			// TODO: perform reset
 			inst.WriteToOutput("AFU Reset.\n");
+			inst.AFU_Reset();
 		}
 
 		if(reset_host)
@@ -190,7 +195,7 @@ namespace priscas
 		}
 	}
 
-	void sr(const Arg_Vec& args, Shell& inst)
+	void sr(const Arg_Vec& args, Shell_Cload& inst)
 	{
 		if(args.size() <= 1)
 		{
@@ -331,7 +336,7 @@ namespace priscas
 		}
 	}
 
-	void mem(const Arg_Vec & args, Shell& inst)
+	void mem(const Arg_Vec & args, Shell_Cload& inst)
 	{
 		inst.WriteToOutput(("[Memory Information]\n"));
 
@@ -375,7 +380,7 @@ namespace priscas
 		}
 	}
 
-	void wait(const Arg_Vec& args, Shell& inst)
+	void wait(const Arg_Vec& args, Shell_Cload& inst)
 	{
 		// This sleeps until a timeout or a condition in shared memory
 		// with the FPGA is met
@@ -441,7 +446,7 @@ namespace priscas
 		inst.modeset_Interactive();
 	}
 
-	void resize(const Arg_Vec& args, Shell& inst)
+	void resize(const Arg_Vec& args, Shell_Cload& inst)
 	{
 		inst.WriteToOutput(".resize\n");
 		// Take the mem and resize it to an args[1] size address space.
@@ -487,5 +492,10 @@ namespace priscas
 			inst.Mem().reset();
 			inst.WriteToOutput("Memory space succesfully resized.\n");
 		}
+	}
+
+	void go(const Arg_Vec& args, Shell_Cload& inst)
+	{
+		inst.enableMemCntrl();
 	}
 }
