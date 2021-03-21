@@ -106,7 +106,9 @@ module memory_map
    // MMIO read code
    // ============================================================= 	    
    always_ff @(posedge clk or posedge rst) begin
-	 mmio.rd_data <= '0;
-         // Here for legacy reasons might remove for optimization
+	if(rst) begin
+	    mmio.rd_data <= '0;
+            // Here for legacy reasons might remove for optimization
+	end
    end
 endmodule
