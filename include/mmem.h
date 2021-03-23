@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #ifndef __MMEM_H__
 #define __MMEM_H__
+#include <cstddef>
 #include <cstring>
 #include "priscas_global.h"
 #include "primitives.h"
