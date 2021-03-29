@@ -103,13 +103,14 @@ module afu
        .ADDR_WIDTH(VIRTUAL_BYTE_ADDR_WIDTH),
        .SIZE_WIDTH(CL_ADDR_WIDTH+1)
        )
-     memory_map (.*);
+   memory_map (.*);
 
    wire local_dma_re, local_dma_we;
 
    wire [1:0] mem_op;
    wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cpu_addr;
    logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr;
    wire tx_done;
    wire ready;
    wire rd_valid;
@@ -142,7 +143,7 @@ module afu
        .host_wr_ready(~dma.full),
        .op(mem_op), // CPU Defined
        .raw_address(cpu_addr), // Address in the CPU space
-       .address_offset(mmio.wr_addr),
+       .address_offset(wr_addr),
        .common_data_bus_read_in(cpu_out), // CPU data word bus, input
        .common_data_bus_write_out(cpu_in),
        .host_data_bus_read_in(dma.rd_data),
