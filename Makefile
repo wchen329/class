@@ -15,7 +15,9 @@ CLOAD_MAIN = cload_entry.o
 INCLUDE = include
 INCLUDE_CONTRIB = contrib/dma_loopback/sw
 LIB = -L. -lmtcore
-LIB_CLOAD = -lopae-c -luuid -lopae-cxx-core -lMPF-cxx -lMPF
+LIB_CLOAD_COMMON = -luuid -lopae-cxx-core -lMPF-cxx -lMPF
+LIB_CLOAD = -lopae-c $(LIB_CLOAD_COMMON)
+LIB_CLOAD_SIM = -lopae-c-ase $(LIB_CLOAD_COMMON)
 
 all: $(LIB_DIR)/libmtcore.a class cload
 
@@ -40,6 +42,9 @@ $(BIN_DIR)/class: $(LIB_DIR)/libmtcore.a $(SHELL_MAIN) $(INCLUDE)
 
 $(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
 	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD) -o ../$@
+
+$(BIN_DIR)/cload_sim: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
+	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD_SIM) -o ../$@
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<

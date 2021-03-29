@@ -2,6 +2,7 @@ bin/*
 build/*
 build-*
 lib/*
+contrib/dma_loopback/sim
 PRISCAS/Debug/*
 PRISCAS/Release/*
 PRISCAS/PRISCAS.opensdf
