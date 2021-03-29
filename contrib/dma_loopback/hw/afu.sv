@@ -120,6 +120,7 @@ module afu
    wire [31:0] cpu_out; // Todo, parameterize
 
    cpu
+   mock
    (
        .clk(clk),
        .rst_n(~rst),
@@ -133,7 +134,7 @@ module afu
 
    // Memory Controller module
    mem_ctrl
-   (
+   memory(
        .clk(clk),
        .rst_n(~rst),
        .host_init(go),
@@ -141,7 +142,7 @@ module afu
        .host_wr_ready(~dma.full),
        .op(mem_op), // CPU Defined
        .raw_address(cpu_addr), // Address in the CPU space
-       .address_offset(wr_addr),
+       .address_offset(mmio.wr_addr),
        .common_data_bus_read_in(cpu_out), // CPU data word bus, input
        .common_data_bus_write_out(cpu_in),
        .host_data_bus_read_in(dma.rd_data),
