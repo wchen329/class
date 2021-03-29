@@ -43,8 +43,8 @@ $(BIN_DIR)/class: $(LIB_DIR)/libmtcore.a $(SHELL_MAIN) $(INCLUDE)
 $(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
 	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD) -o ../$@
 
-$(BIN_DIR)/cload_sim: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
-	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD_SIM) -o ../$@
+$(BIN_DIR)/cload_sim: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE)
+	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD_SIM) $(SYSARG) -o ../$@
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
