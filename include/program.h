@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #ifndef __PROGRAM_H__
 #define __PROGRAM_H__
+#include <cstddef>
 #include <cstdint>
 #include "mt_exception.h"
 
