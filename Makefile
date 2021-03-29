@@ -44,10 +44,10 @@ $(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE)
 	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD) -o ../$@
 
 $(BIN_DIR)/cload_sim: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE)
-	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD_SIM) $(SYSARG) -o ../$@
+	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD_SIM) $(CLASS_SYSARG) -o ../$@
 
 .cpp.o:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) $(CLASS_SYSARG) -c $<
 	mv $*.o build 
 release:
 	$(MAKE) all CFLAGS="-O3 -I\"$(INCLUDE)\" -I"$(INCLUDE_CONTRIB)" -DP_RELEASE"
