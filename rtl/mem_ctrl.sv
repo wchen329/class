@@ -75,6 +75,9 @@ module mem_ctrl
 
 	logic [WORD_SIZE-1:0] line_out [FILL_COUNT-1:0];
 
+	// Bubble : for undocumented required stalls on the DMA system
+	reg bubble;
+
 	genvar gv;
 	generate
 		for(gv = 0; gv < FILL_COUNT; ++gv) begin
@@ -107,7 +110,7 @@ module mem_ctrl
 				if(op == WRITE) begin
 					host_wgo = 1'b1;
 
-					if(host_wr_ready) begin
+					if(host_wr_ready && bubble) begin
 						// Write
 						/* Here, we should just write the data and then
 						 * return to READY when done
@@ -121,7 +124,11 @@ module mem_ctrl
 				/* Just fill the cache line buffer with a single read
 				 */
 					host_rgo = 1'b1;
-					if(host_rd_ready) begin
+					if(host_rd_ready && bubble) begin
+						/* It seems Read Enable is not really a "read enable"
+						 * it's mostly for ack'ing to the DMA engine that
+						 * you've read the data and you are ready to shift the old data out. Hence why we need a bubble (probably)
+						 */
 						host_re = 1'b1;
 					end
 				end
@@ -150,6 +157,7 @@ module mem_ctrl
 			state <= STARTUP;
 			fill_count <= '0;
 			line_buffer <= '0;
+			bubble <= '0;
 		end
 
 		else begin
@@ -190,6 +198,9 @@ module mem_ctrl
 						if(op_in == WRITE) begin
 							line_buffer <= {common_data_bus_read_in, line_buffer[CL_SIZE_WIDTH-1:WORD_SIZE]};					
 						end
+						else if(op_in == READ) begin
+							bubble <= '0;
+						end
 						fill_count <= fill_count + 1;
 					end
 				end
@@ -199,13 +210,19 @@ module mem_ctrl
 						// Read
 						line_buffer <= host_data_bus_read_in;
 						state <= FILL;
+						bubble <= bubble + 1;
 					end
-					else if(op == WRITE && host_wr_ready) begin
+					else if(op == WRITE && host_wr_ready && bubble) begin
 						// Write
 						/* Here, we should just write the data and then
 						 * return to READY when done
 						 */
 						state <= READY;
+						bubble <= 1'b0;
+					end
+					else if(op == WRITE && !bubble) begin
+						// Wait a cycle to let any address changes propagate down the chain.
+						bubble <= bubble + 1;
 					end
 				end
 
