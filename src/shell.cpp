@@ -79,15 +79,26 @@ namespace priscas
 			WriteToOutput("Usage:\n");
 			WriteToOutput("\t{-i [i_filename.s]} - assemble file of name i_filename.s\n");
 			WriteToOutput("\t{-o [o_filename.bin]} - dump assembly output to file of name o_filename.bin \n");
+			WriteToOutput("\t{-s bin OR hex OR mif} - specify output format as bin, hex, or MIF\n");
 			return;
 		}
 
 
+		// Other predicates to check for
 		if(shEnv.get_Option_AsmOutput())
 		{
 			if(!shEnv.get_Option_AsmOutputSpecified())
 			{
 				WriteToError("Error: -o requires a filename to be specified.\n");
+				return;
+			}
+		}
+
+		if(shEnv.get_Option_AsmStrMode())
+		{
+			if(!shEnv.get_Option_AsmStrModeSpecified())
+			{
+				WriteToError("Error: -s requires one of: {bin, hex, mif} as an arguments.\n");
 				return;
 			}
 		}
@@ -98,6 +109,7 @@ namespace priscas
 		 * Second run through: do the actual assembling
 		 */
 
+		std::vector<size_t> inst_lengths;
 
 		/* First, if an input file was specified
 		 * (1) collect file symbols
@@ -180,6 +192,8 @@ namespace priscas
 
 				// Increment the PC at which to flash
 				asm_pc = asm_pc.AsUInt64() + bytecount;
+
+				inst_lengths.push_back(bytecount);
 			}
 			
 		}
@@ -188,7 +202,22 @@ namespace priscas
 		try
 		{
 			// Write this to program, or remain in memory
-			UPString fname("a.bin");
+
+			UPString default_name;
+			switch(shEnv.get_AsmStrMode())
+			{
+				case asm_ostream::MIF:
+					default_name = "a.mif";
+					break;
+				case asm_ostream::HEX:
+					default_name = "a.hex";
+					break;
+				default:
+					default_name = "a.bin";
+			}
+
+
+			UPString fname(default_name);
 
 			if(shEnv.get_Option_AsmOutput())
 			{
@@ -196,15 +225,35 @@ namespace priscas
 			}
 
 			// Dump the output
-			asm_ostream prg_o(fname.c_str());
+			asm_ostream prg_o(fname.c_str(), shEnv.get_AsmStrMode());
 
 			uint64_t ind = 0;
-			while(ind < prog.get_EOP())
+			uint64_t addr = 0;
+			while(addr < prog.get_EOP())
 			{
-				prg_o.append(prog.read(ind));
+				size_t bt = inst_lengths[ind];
+
+				byte_8b buf[1024];
+
+				if(bt > 1024)
+				{
+					fprintf(stderr, "FATAL: instruction size too large, must be 1024 bytes or less");
+					abort();
+				}
+
+				for(size_t sz = 0; sz < bt; ++sz)
+				{
+					buf[sz] = prog.read(addr + sz); 
+				}
+
+				prg_o.append(buf, bt);
+
+				// Increments
 				++ind;
+				addr += bt;
 			}
 			
+			prg_o.finalize();
 
 			fprintf(stdout, "Operation completed succesfully\n");
 		}

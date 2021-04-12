@@ -21,6 +21,7 @@
 #ifndef __ENV_H__
 #define __ENV_H__
 #include <algorithm>
+#include "mtsstream.h"
 #include "priscas_global.h"
 
 namespace priscas
@@ -77,6 +78,21 @@ namespace priscas
 			 * Return whether or not Binary Input option -l has been specified
 			 */
 			bool get_Option_AsmMode() { return this->has_Option_AsmMode; }
+
+			/* bool get_Option_AsmStrMode
+			 * Specifies if the AsmStrMode -s was specified on the command line
+			 */
+			bool get_Option_AsmStrMode() { return this->has_Option_AsmStrMode; }
+
+			/* bool has_AsmStrMode_Value
+			 * Specifies if -s had a value specified for it
+			 */
+			bool get_Option_AsmStrModeSpecified() { return this->has_AsmStrMode_Value; }
+
+			/* void get_AsmStrMode()
+			 * Returns the ASM stream type specified.
+			 */
+			asm_ostream::STREAM_TYPE get_AsmStrMode() { return this->st; }
 
 			/* void get_Option_AsmInputSpecified
 			 * Return whether or not ASM Input option -i had a value specified for it
@@ -138,6 +154,9 @@ namespace priscas
 				has_Option_MemWidth(false),
 				has_Option_CpuSelect(false),
 				has_AsmInput_Value(false),
+				has_Option_AsmStrMode(false),
+				has_AsmStrMode_Value(false),
+				st(asm_ostream::BIN),
 				channel_count(1),
 				cpu_count(1)
 			{}
@@ -157,6 +176,9 @@ namespace priscas
 			bool has_Option_CpuSelect;	// -c option specified
 			bool has_AsmInput_Value;	// -i option has a value
 			bool has_AsmOutput_Value;       // -o option has a value
+			bool has_Option_AsmStrMode;	// -s option specified
+			bool has_AsmStrMode_Value;	// -s option has a value
+			asm_ostream::STREAM_TYPE st;	// -s value
 			unsigned mem_bitwidth;		// memory bitwidth (default 16)
 			unsigned channel_count;		// amount of memory channels (currently 1), future use
 			unsigned cpu_count;			// amount of cpu sockets (currently 1), future use

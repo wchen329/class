@@ -114,6 +114,8 @@ namespace priscas
 		return ret + interm;
 	}
 
+	UPString dynamicHexBuilder(uint8_t* ui, size_t count);
+
 	/* BW
 	 * interface for generic nth bit bit-word
 	 */
