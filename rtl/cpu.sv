@@ -76,6 +76,7 @@ module cpu
 					fill_count <= fill_count + 1;
 
 					if(tx_done) begin
+						state <= READ;
 						wr_fill <= 1'b0;
 					end
 				end

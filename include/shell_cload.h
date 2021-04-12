@@ -45,7 +45,7 @@ namespace priscas
 			virtual void Run();
 			Shell_Cload();
 			mmem& Mem() { return shmem; }
-			void AFU_Reset() { afu.reset(); }
+			void AFU_Reset();
 			void enableMemCntrl() { afu.write(MMIO_GO, 0x1); }
 			void execute_runtime_directive(UPString_Vec& args_list);
 

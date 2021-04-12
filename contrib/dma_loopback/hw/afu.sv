@@ -103,13 +103,14 @@ module afu
        .ADDR_WIDTH(VIRTUAL_BYTE_ADDR_WIDTH),
        .SIZE_WIDTH(CL_ADDR_WIDTH+1)
        )
-     memory_map (.*);
+   memory_map (.*);
 
    wire local_dma_re, local_dma_we;
 
    wire [1:0] mem_op;
    wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cpu_addr;
    logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr;
    wire tx_done;
    wire ready;
    wire rd_valid;
@@ -120,6 +121,7 @@ module afu
    wire [31:0] cpu_out; // Todo, parameterize
 
    cpu
+   mock
    (
        .clk(clk),
        .rst_n(~rst),
@@ -133,7 +135,7 @@ module afu
 
    // Memory Controller module
    mem_ctrl
-   (
+   memory(
        .clk(clk),
        .rst_n(~rst),
        .host_init(go),
