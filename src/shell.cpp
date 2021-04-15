@@ -77,9 +77,10 @@ namespace priscas
 		else
 		{
 			WriteToOutput("Usage:\n");
-			WriteToOutput("\t{-i [i_filename.s]} - assemble file of name i_filename.s\n");
-			WriteToOutput("\t{-o [o_filename.bin]} - dump assembly output to file of name o_filename.bin \n");
+			WriteToOutput("\t{-i i_filename.s} - assemble file of name i_filename.s\n");
+			WriteToOutput("\t{-o o_filename.bin} - dump assembly output to file of name o_filename.bin \n");
 			WriteToOutput("\t{-s bin OR hex OR mif} - specify output format as bin, hex, or MIF\n");
+			WriteToOutput("\t{-b width - for MIF out, specify the word size of the output (default is the size of the instruction) in bytes}\n");
 			return;
 		}
 
@@ -99,6 +100,15 @@ namespace priscas
 			if(!shEnv.get_Option_AsmStrModeSpecified())
 			{
 				WriteToError("Error: -s requires one of: {bin, hex, mif} as an arguments.\n");
+				return;
+			}
+		}
+
+		if(shEnv.get_Option_WordSize())
+		{
+			if(!shEnv.get_Option_WordSizeSpecified())
+			{
+				WriteToError("Error: -b requires an integer greater than 0 as its argument\n");
 				return;
 			}
 		}
@@ -226,6 +236,7 @@ namespace priscas
 
 			// Dump the output
 			asm_ostream prg_o(fname.c_str(), shEnv.get_AsmStrMode());
+			prg_o.set_width(shEnv.get_Wordsize());
 
 			uint64_t ind = 0;
 			uint64_t addr = 0;

@@ -466,7 +466,7 @@ namespace priscas
 		else if(bitcount < 16)
 		{
 			inst.WriteToOutput("Too small of an address space specified.\n");
-			inst.WriteToOutput("No resizing done (min size 256 bytes [8-bit]).\n");
+			inst.WriteToOutput("No resizing done (min size 64KB [16-bit]).\n");
 		}
 		else
 		{

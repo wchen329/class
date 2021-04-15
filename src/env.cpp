@@ -45,6 +45,26 @@ namespace priscas
 					}
 				}
 			}
+
+			if(args[argind] == "-b")
+			{
+				this->has_Option_WordSize = true;
+
+				if((argind + 1) < argc)
+				{
+					this->width = atoi(args[argind + 1].c_str());
+
+					if(width <= 0)
+					{
+						this->has_WordSize_Value = false;
+					}
+					else
+					{
+						this->has_WordSize_Value = true;
+					}
+				}
+			}
+
 			if(args[argind] == "-l")
 			{
 				this->has_Option_AsmMode = true;

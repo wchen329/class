@@ -47,6 +47,7 @@ namespace priscas
 			~asm_ostream();
 
 			void set_mode(STREAM_TYPE stin) { this->st = stin; }
+			void set_width(size_t newwidth) { this->width = newwidth; }
 			void finalize();
 
 		private:
@@ -57,7 +58,8 @@ namespace priscas
 			STREAM_TYPE st;
 
 			UPString_Vec mif_insts;
-			size_t max_inst_size;
+			size_t width;
+			size_t total_bytes;
 	};
 }
 
