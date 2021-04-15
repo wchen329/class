@@ -113,6 +113,19 @@ namespace priscas
 				}
 			}
 
+			// If next line is still here, that means we have an unaligned line
+			// Nevertheless, we should support this by zero filling
+			if(!next_line.empty())
+			{
+					while(bcount < width)
+					{
+						next_line = UPString("00") + next_line;
+						++bcount;
+					}
+
+					fprintf(this->f, "\t%lld: %s;\n", addr++, next_line.c_str());
+			}
+
 			fprintf(this->f, "END;\n");
 		}
 	}
