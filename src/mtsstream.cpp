@@ -68,7 +68,7 @@ namespace priscas
 			// If we are writing a mif file, serialize at this point
 			fprintf(this->f, "-- CLASS generated .mif file\n");
 			fprintf(this->f, "WIDTH=%d;\n", width * 8);
-			fprintf(this->f, "DEPTH=%d;\n", total_bytes / width);
+			fprintf(this->f, "DEPTH=%d;\n", (total_bytes / width) + (total_bytes % width != 0 ? 1 : 0)); // In the case of uneven alignment, round up
 			fprintf(this->f, "\n\n");
 
 			// Write Radix Information
