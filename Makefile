@@ -11,6 +11,7 @@ OBJS =  env.o messages.o mips.o mtsstream.o \
 CLOAD_OBJS = AFU.o shell_cload.o runtime_call.o mmem.o
 SHELL_MAIN = shell_entry.o
 ISA_GEN_MAIN = ISA_gen.o
+X2B_MAIN = x2b.o
 CLOAD_MAIN = cload_entry.o
 INCLUDE = include
 INCLUDE_CONTRIB = contrib/dma_loopback/sw
@@ -19,7 +20,7 @@ LIB_CLOAD_COMMON = -luuid -lopae-cxx-core -lMPF-cxx -lMPF
 LIB_CLOAD = -lopae-c $(LIB_CLOAD_COMMON)
 LIB_CLOAD_SIM = -lopae-c-ase $(LIB_CLOAD_COMMON)
 
-all: $(LIB_DIR)/libmtcore.a class cload
+all: $(LIB_DIR)/libmtcore.a class cload $(BIN_DIR)/x2b
 
 class: $(BIN_DIR)/class
 
@@ -39,6 +40,10 @@ $(BIN_DIR)/class: $(LIB_DIR)/libmtcore.a $(SHELL_MAIN) $(INCLUDE)
 		mkdir $(BIN_DIR); \
 	fi
 	cd build; $(CC) $(SHELL_MAIN) $(LIB) -o ../$@
+
+$(BIN_DIR)/x2b: $(LIB_DIR)/libmtcore.a $(X2B_MAIN) $(INCLUDE)
+	cd build; $(CC) $(X2B_MAIN) $(LIB) -o ../$@
+	
 
 $(BIN_DIR)/cload: $(LIB_DIR)/libmtcore.a $(CLOAD_MAIN) $(CLOAD_OBJS) $(INCLUDE) 
 	cd build; $(CC) $(CLOAD_MAIN) $(CLOAD_OBJS) $(LIB) $(LIB_CLOAD) -o ../$@
