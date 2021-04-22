@@ -124,19 +124,13 @@ module mem_ctrl
 				/* Just fill the cache line buffer with a single read
 				 */
 					host_rgo = 1'b1;
-					if(host_rd_ready && bubble) begin
-						/* It seems Read Enable is not really a "read enable"
-						 * it's mostly for ack'ing to the DMA engine that
-						 * you've read the data and you are ready to shift the old data out. Hence why we need a bubble (probably)
-						 */
-						host_re = 1'b1;
-					end
 				end
 			end
 				
 			FILL: begin
 
 				if(op == READ) begin
+					host_re = 1'b1;
 					rd_valid = 1'b1;
 
 					if(&fill_count == 1'b1) begin
@@ -198,9 +192,6 @@ module mem_ctrl
 						if(op_in == WRITE) begin
 							line_buffer <= {common_data_bus_read_in, line_buffer[CL_SIZE_WIDTH-1:WORD_SIZE]};					
 						end
-						else if(op_in == READ) begin
-							bubble <= '0;
-						end
 						fill_count <= fill_count + 1;
 					end
 				end
@@ -210,7 +201,6 @@ module mem_ctrl
 						// Read
 						line_buffer <= host_data_bus_read_in;
 						state <= FILL;
-						bubble <= bubble + 1;
 					end
 					else if(op == WRITE && host_wr_ready && bubble) begin
 						// Write
