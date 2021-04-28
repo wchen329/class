@@ -184,8 +184,8 @@ namespace priscas
 		// Perform resets.
 		if(reset_afu)
 		{
-			inst.WriteToOutput("AFU Reset.\n");
-			inst.AFU_Reset();
+			//inst.WriteToOutput("AFU Reset [Not implemented].\n");
+			//inst.AFU_Reset();
 		}
 
 		if(reset_host)
