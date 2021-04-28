@@ -352,9 +352,16 @@ namespace priscas
 
 		size_t first = 1;
 		bool hexOutput = false;
+		bool asciiOutput = false;
 		if(args[1] == "-h")
 		{
 			hexOutput = true;
+			first++;
+		}
+
+		if(args[1] == "-a")
+		{
+			asciiOutput = true;
 			first++;
 		}
 
@@ -371,7 +378,8 @@ namespace priscas
 				}
 
 				UPString index_str = hexOutput ? genericHexBuilder<uint32_t, 32>(*itr_2) :  priscas_io::StrTypes::SizeToStr(*itr_2);
-				UPString val_str = hexOutput ? genericHexBuilder<uint8_t, 8>(inst.Mem()[*itr_2]) : priscas_io::StrTypes::IntToStr(inst.Mem()[*itr_2]);
+				UPString val_str = hexOutput ? genericHexBuilder<uint8_t, 8>(inst.Mem()[*itr_2]) :
+							asciiOutput ? UPString("\'") + (UPString += inst.Mem()[*itr_2]) +  UPString("\'") : priscas_io::StrTypes::IntToStr(inst.Mem()[*itr_2]);
 
 				std::string o = (std::string("Mem[") + index_str + std::string("]: ") + 
 					val_str + priscas_io::newLine);
