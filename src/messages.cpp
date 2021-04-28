@@ -61,6 +61,9 @@ namespace priscas
 									std::string("For more information, just use .help without specifying any arguments.\n");
 
 	const std::string HELP_MEM =	std::string(".mem\n") +
+									std::string("Usage: .mem [-a OR -h] range_0... range_1...\n") +
+									std::string("-h: use hex value output with hex indexing\n") +
+									std::string("-a: use ascii value output with hex indexing\n") +
 									std::string("With no args, .mem will only print out the size of main memory\n") +
 									std::string("However a single memory address can be printed with a single unsigned integer argument:\n") +
 									std::string(".mem 0 # print mem[0]\n") +
