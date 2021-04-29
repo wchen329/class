@@ -98,6 +98,7 @@ interface dma_if #(parameter int DATA_WIDTH,
       output wr_addr,
       output wr_size,
       output wr_data,
+      output host_wr_completed,
       input  wr_done,
       input  full		       
       );

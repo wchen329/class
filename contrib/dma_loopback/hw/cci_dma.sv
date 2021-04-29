@@ -243,6 +243,7 @@ module cci_dma
    // Assign DMA interface outputs.
    assign dma.rd_done = !reads_are_pending;
    assign dma.wr_done = !writes_are_pending;
+   assign dma.host_wr_completed = cci_wr_en_delayed || !c1Empty;
    assign dma.full    = c1TxAlmFull;
   
 endmodule

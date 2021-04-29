@@ -140,7 +140,7 @@ module afu
        .rst_n(~rst),
        .host_init(go),
        .host_rd_ready(~dma.empty),
-       .host_wr_ready(~dma.full),
+       .host_wr_ready(~dma.full & ~dma.host_wr_completed),
        .op(mem_op), // CPU Defined
        .raw_address(cpu_addr), // Address in the CPU space
        .address_offset(wr_addr),
