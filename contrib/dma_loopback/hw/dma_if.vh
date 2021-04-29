@@ -46,7 +46,7 @@ interface dma_if #(parameter int DATA_WIDTH,
    typedef logic [ADDR_WIDTH-1:0] addr_t;
    typedef logic [SIZE_WIDTH-1:0] count_t;
 
-   logic rd_go, rd_done, rd_en, empty;
+   logic rd_go, rd_done, rd_en, empty, host_wr_completed;
    logic [DATA_WIDTH-1:0] rd_data;
    addr_t rd_addr;
    count_t rd_size;
@@ -77,6 +77,7 @@ interface dma_if #(parameter int DATA_WIDTH,
       input  wr_addr,
       input  wr_size,
       input  wr_data,
+      output host_wr_completed,
       output wr_done,
       output full				
       );
@@ -98,6 +99,7 @@ interface dma_if #(parameter int DATA_WIDTH,
       output wr_addr,
       output wr_size,
       output wr_data,
+      output host_wr_completed,
       input  wr_done,
       input  full		       
       );
