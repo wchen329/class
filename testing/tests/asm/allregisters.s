@@ -1,4 +1,4 @@
-addi $zero, $zero, 50 # make sure zero register is read only
+addi $zero, $zero, 50 ; make sure zero register is read only
 addi $at, $zero, 1
 addi $v0, $zero, 2
 addi $v1, $zero, 3
@@ -31,9 +31,8 @@ addi $sp, $zero, 29
 addi $fp, $zero, 30
 addi $ra, $zero, 31
 
-# No ops for pipelined register test
+; No ops for pipelined register test
 sll $zero $zero, 0
 sll $zero $zero, 0
 sll $zero $zero, 0
 sll $zero $zero, 0
-.exit

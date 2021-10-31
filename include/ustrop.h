@@ -28,6 +28,7 @@
 #include "priscas_global.h"
 #include "primitives.h"
 #include <algorithm>
+#include <cstdlib>
 
 namespace priscas
 {
@@ -65,7 +66,11 @@ namespace priscas
 		/* numeric_interpet<>
 		 * Interpret string as specific type
 		 */
+#ifdef WIN32
+		template<class Tin, Tin (*f)(const char*, char**, int)>
+#else
 		template<class Tin, Tin (*f)(const char*, char**, int) throw()>
+#endif
 		static Tin numeric_interpret(const UPString& in)
 		{
 

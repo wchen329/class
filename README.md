@@ -5,6 +5,14 @@ The Cloud Loader and Assembler System (CLASS) is a simple tool which allows, bas
 that serves as a barebones assembler system for custom ISAs of designs loaded to FPGAs.
 
 ## Build Instructions
+### Windows
+Only the assembler is supported in Windows.
+
+To compile on Windows you need at least Visual Studio 2010 (10.0) and Windows XP (2002).
+Windows 2000, VC 9.0/2008 and earlier are not supported, but may work.
+
+To build, open `class\class.sln` and then press F7 (or Build Solution).
+
 ### UNIX and UNIX-like
 Compilation on UNIX systems can be done using one of the many make utilities. There are three main applications that can be built from CLASS. These are CLASS (the assembler),
 CLOAD (the loader), and CLOAD\_SIM (the loader for ASE).

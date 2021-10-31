@@ -29,8 +29,10 @@ namespace priscas
 	{
 		UPString ret;
 		bool notws = false;
-		for(char c : ups)
+		for(size_t ind = 0; ind < ups.size(); ++ind)
 		{
+			char c = ups[ind];
+
 			if(!is_whitespace(c))
 			{
 				notws = true;
@@ -49,8 +51,9 @@ namespace priscas
 	{
 		UPString ret;
 
-		for(char c : ups)
+		for(size_t ind = 0; ind < ups.size(); ++ind)
 		{
+			char c = ups[ind];
 			if(c == ';') break;
 			if(c == '\n') break;
 			ret += c;
@@ -102,12 +105,14 @@ namespace priscas
 
 	uint64_t StrOp::StrToUInt64(const UPString& in)
 	{
-		return numeric_interpret<unsigned long long, &strtoull>(in);
+		//return numeric_interpret<unsigned long long, &strtoull>(in);
+		return numeric_interpret<unsigned long, &strtoul>(in);
 	}
 
 	int64_t StrOp::StrToInt64(const UPString& in)
 	{
-		return numeric_interpret<long long, &strtoll>(in);
+		//return numeric_interpret<long long, &strtoll>(in);
+		return numeric_interpret<long, &strtol>(in);
 	}
 
 	uint32_t StrOp::StrToUInt32(const UPString& in)

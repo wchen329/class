@@ -27,7 +27,7 @@ priscas::Shell runtime; // Simulator Runtime
 
 
 /* Main routine for running
- * the CLASS directly.
+ * the CAS directly.
  */
 int main(int argc, char ** argv)
 {
