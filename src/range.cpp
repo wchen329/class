@@ -22,6 +22,7 @@
 
 namespace priscas
 {
+
 	range::range(const UPString& specifier)
 	{
 		// 0th value - the begin
@@ -83,10 +84,9 @@ namespace priscas
 		}
 
 		// Now evaluate the range
-		while((end - begin >= 0 && step > 0) || (end - begin <= 0 && step < 0))
-		{
-			numbers.push_back(begin);
-			begin += step;
-		}
+		first = begin;
+		last = end;
+		this->step = step;
+		curr = begin;
 	}
 }
