@@ -28,6 +28,7 @@
 #include "priscas_global.h"
 #include "primitives.h"
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 
 namespace priscas
@@ -63,14 +64,12 @@ namespace priscas
 		 */
 		static UPString has_prefix(const UPString& strin, const UPString& sprfx);
 
+
+
 		/* numeric_interpet<>
 		 * Interpret string as specific type
 		 */
-#ifdef WIN32
-		template<class Tin, Tin (*f)(const char*, char**, int)>
-#else
-		template<class Tin, Tin (*f)(const char*, char**, int) throw()>
-#endif
+		template<class Tin>
 		static Tin numeric_interpret(const UPString& in)
 		{
 
@@ -101,23 +100,31 @@ namespace priscas
 				}
 			}
 
-			char * epb = nullptr;
-			ret = f(unprefd.c_str(), &epb, base);
-
-			if(*epb != '\0')
+			// Use the definition of decimal number to build ret (little endian)
+			for(size_t itr = 0; itr < unprefd.size(); ++itr)
 			{
-				throw mt_bad_imm();
-			}
-		
-				return ret;
+				Tin multiplier = 1;
+
+				for(size_t m_itr = 0; m_itr < itr; ++m_itr)
+				{
+					multiplier *= base;
+				}
+
+				ret += unprefd[itr] * multiplier;
 			}
 
-			static uint64_t StrToUInt64(const UPString&);
-			static int64_t StrToInt64(const UPString&);
-			static uint32_t StrToUInt32(const UPString&);
-			static int32_t StrToInt32(const UPString&);
+			return ret;
+		}
+
+		byte_8b get_digit_value(char ascii);
+
+		static uint64_t StrToUInt64(const UPString&);
+		static int64_t StrToInt64(const UPString&);
+		static uint32_t StrToUInt32(const UPString&);
+		static int32_t StrToInt32(const UPString&);
 
 	};
+
 }
 
 #endif
