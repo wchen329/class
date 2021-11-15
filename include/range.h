@@ -47,15 +47,21 @@ namespace priscas
 			// Reset the range so it iterates from the beginning.
 			void reset() { this->curr = first; }
 
-			size_t next() { return curr; curr += step; }
+			size_t next() { size_t ret = curr; curr += step; return ret; }
 
-			bool atEnd() { return curr >= last;}
+			bool atEnd()
+			{
+				if(step > 0)
+					return curr >= last;
+				else
+					return curr <= last;
+			}
 
 		private:
-			uint64_t first; // Initial Value in Range
-			uint64_t last; // Last Value in Range (non-inclusive)
-			uint64_t step; // The iterator step
-			uint64_t curr; // Current value
+			int64_t first; // Initial Value in Range
+			int64_t last; // Last Value in Range
+			int64_t step; // The iterator step
+			int64_t curr; // Current value
 	};
 }
 

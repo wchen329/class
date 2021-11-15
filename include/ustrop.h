@@ -100,7 +100,20 @@ namespace priscas
 				}
 			}
 
-			// Use the definition of decimal number to build ret (little endian)
+			// Check for "-". If it precedes everything, make the number
+			// negative
+			if(unprefd.size() == 0)
+			{
+				throw priscas::mt_bad_imm();
+			}
+
+			bool neg = unprefd[0] == '-';
+			if(neg) unprefd = unprefd.substr(1, unprefd.size());
+
+			// For convenience reverse to calc
+			std::reverse<UPString::iterator>(unprefd.begin(), unprefd.end());
+
+			// Use the definition of a n-radix number to build ret (little endian)
 			for(size_t itr = 0; itr < unprefd.size(); ++itr)
 			{
 				Tin multiplier = 1;
@@ -110,13 +123,15 @@ namespace priscas
 					multiplier *= base;
 				}
 
-				ret += unprefd[itr] * multiplier;
+				ret += get_digit_value(unprefd[itr]) * multiplier;
 			}
+
+			if(neg) ret = -ret;
 
 			return ret;
 		}
 
-		byte_8b get_digit_value(char ascii);
+		static byte_8b get_digit_value(char ascii);
 
 		static uint64_t StrToUInt64(const UPString&);
 		static int64_t StrToInt64(const UPString&);

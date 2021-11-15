@@ -16,4 +16,6 @@ void Setup_Tests()
 	AddTest(test_shell_justexit, "Exit [not implemented]");
 	AddTest(test_shell_multidirectsymbol, "Multi Symbols [not implemented]");
 	AddTest(test_reverse_endian, "Reverse Endian Test");
+	AddTest(test_strconv, "String Parsing Test");
+	AddTest(test_range, "Range Generation Test");
 }

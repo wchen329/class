@@ -104,15 +104,17 @@ namespace priscas
 	}
 
 	// Convert ascii to binary, supports up to hex
-	byte_8b get_digit_value(char ascii)
+	byte_8b StrOp::get_digit_value(char ascii)
 	{
+		// For numerical, easy; just subtract the ASCII base
+		if(ascii >= '0' && ascii <= '9')
+		{
+			return ascii - 48; // '0' is 48
+		}
+
+		// For hex chars
 		switch(ascii)
 		{
-			// For numerical, easy; just subtract the ASCII base
-			if(ascii >= '0' && ascii <= '9')
-			{
-				return ascii - 48; // '0' is 48
-			}
 
 			// More flexible ways to do this but... this is okay too
 			case 'a':
