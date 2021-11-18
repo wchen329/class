@@ -110,7 +110,10 @@ module afu
    wire [1:0] mem_op;
    wire [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cpu_addr;
    logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] final_addr;
-   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s0;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s1;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s2;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s3;
    wire tx_done;
    wire ready;
    wire rd_valid;
@@ -133,6 +136,17 @@ module afu
        .common_data_bus_out(cpu_out)
    );
 
+   // Address Translation module
+   addr_tr_unit
+   atu(
+       .virtual_addr(cpu_addr),
+       .base_address_s0(wr_addr_s0),
+       .base_address_s1(wr_addr_s1),
+       .base_address_s2(wr_addr_s2),
+       .base_address_s3(wr_addr_s3),
+       .corrected_address(final_addr)
+   );
+
    // Memory Controller module
    mem_ctrl
    memory(
@@ -142,13 +156,10 @@ module afu
        .host_rd_ready(~dma.empty),
        .host_wr_ready(~dma.full & ~dma.host_wr_completed),
        .op(mem_op), // CPU Defined
-       .raw_address(cpu_addr), // Address in the CPU space
-       .address_offset(wr_addr),
        .common_data_bus_read_in(cpu_out), // CPU data word bus, input
        .common_data_bus_write_out(cpu_in),
        .host_data_bus_read_in(dma.rd_data),
        .host_data_bus_write_out(dma.wr_data),
-       .corrected_address(final_addr),
        .ready(ready), // Usable for the host CPU
        .tx_done(tx_done), // Again, notifies CPU when ever a read or write is complete
        .rd_valid(rd_valid), // Notifies CPU whenever the data on the databus is valid

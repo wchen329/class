@@ -73,7 +73,11 @@ module memory_map
    
 		       mmio_if.user mmio,
    
-   output logic [ADDR_WIDTH-1:0] wr_addr,
+   // starting address for segments 0 thru 3
+   output logic [ADDR_WIDTH-1:0] wr_addr_s0,
+   output logic [ADDR_WIDTH-1:0] wr_addr_s1,
+   output logic [ADDR_WIDTH-1:0] wr_addr_s2,
+   output logic [ADDR_WIDTH-1:0] wr_addr_s3,
    output logic [SIZE_WIDTH-1:0] size,
    output logic        go,
    input logic 	       done   
@@ -85,7 +89,10 @@ module memory_map
    always_ff @(posedge clk or posedge rst) begin 
       if (rst) begin
 	 go       <= '0;
-	 wr_addr  <= '0;	     
+	 wr_addr_s0  <= '0;	     
+	 wr_addr_s1  <= '0;	     
+	 wr_addr_s2  <= '0;	     
+	 wr_addr_s3  <= '0;	     
 	 size     <= '0;
       end
       else begin
@@ -93,10 +100,12 @@ module memory_map
  	 	 	 
          if (mmio.wr_en == 1'b1) begin
             case (mmio.wr_addr)
-              16'h0050: go       <= mmio.wr_data[0];
-	      16'h0052: wr_addr  <= mmio.wr_data[$size(wr_addr)-1:0];
-	      16'h0054: wr_addr  <= mmio.wr_data[$size(wr_addr)-1:0];
-	      16'h0056: size     <= mmio.wr_data[$size(size)-1:0];
+              16'h0050: go          <= mmio.wr_data[0];
+	      16'h0052: wr_addr_s0  <= mmio.wr_data[$size(wr_addr_s0)-1:0];
+	      16'h0054: wr_addr_s1  <= mmio.wr_data[$size(wr_addr_s1)-1:0];
+	      16'h0056: wr_addr_s2  <= mmio.wr_data[$size(wr_addr_s2)-1:0];
+	      16'h0058: wr_addr_s3  <= mmio.wr_data[$size(wr_addr_s3)-1:0];
+	      16'h005a: size        <= mmio.wr_data[$size(size)-1:0];
             endcase
          end
       end

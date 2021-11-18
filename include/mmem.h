@@ -22,6 +22,7 @@
 #define __MMEM_H__
 #include <cstddef>
 #include <cstring>
+#include <vector>
 #include "AFU.h"
 #include "config.h"
 #include "priscas_global.h"
@@ -47,7 +48,7 @@ namespace priscas
 		private:
 			mmem operator=(const mmem &);		// copy assignment, disabled
 			mmem(const mmem &);			// copy constructor, disabled
-			volatile byte_8b * data;		// the actual data of memory
+			std::vector<volatile byte_8b*> data;	// the actual data of memory
 			size_t size;				// size of memory space in bytes
 
 			virtual void alloc(size_t bytes);

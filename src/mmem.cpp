@@ -20,6 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////
 #include "mmem.h"
 
+#define GB 1073741824
+
 namespace priscas
 {
 	volatile byte_8b& mmem::operator[](ptrdiff_t ind) {
@@ -32,13 +34,14 @@ namespace priscas
 	}
 
 	mmem::mmem() :
-		data(nullptr),
-		size(0)
+		size(0),
+		data(4)
 	{
 	}
 
 	mmem::mmem(size_t size) : 
-		size(size)
+		size(size),
+		data(4)
 	{
 		alloc(size);
 	}
@@ -113,6 +116,32 @@ namespace priscas
 		// Can change allocator
 		// Throw std::bad_alloc, potentially
 		// Could also use new...
+
+		// First, find how segments we need
+		uint64_t seg_count = bytes / GB +
+			((bytes % GB) != 0 ? 1: 0);
+
+		// Allocate that many segments, at most 1GB each
+		uint64_t bytes_left = bytes;
+		int segno = 0;
+		while(bytes_left != 0)
+		{
+			// Critical error if more than 4 segments
+			if(segno > 4) abort();
+
+			if(bytes_left >= GB)
+			{
+				data[segno] = afu->malloc<byte_8b>(GB);
+			}
+			else
+			{
+				data[segno] = afu->malloc<byte_8b>(bytes_left);
+			}
+
+			++segno;
+
+		}
+
 		this->data = (afu->malloc<byte_8b>(bytes));
 		if(data == nullptr)
 		{
@@ -121,7 +150,10 @@ namespace priscas
 
 		// When allocating, we have to write the array
 		// starting address out
-		afu->write(MMIO_BASE_ADDR, reinterpret_cast<uint64_t>(this->data));
+		afu->write(MMIO_BASE_ADDR_S0, reinterpret_cast<uint64_t>(this->data[0]));
+		afu->write(MMIO_BASE_ADDR_S1, reinterpret_cast<uint64_t>(this->data[1]));
+		afu->write(MMIO_BASE_ADDR_S2, reinterpret_cast<uint64_t>(this->data[2]));
+		afu->write(MMIO_BASE_ADDR_S3, reinterpret_cast<uint64_t>(this->data[3]));
 		afu->write(MMIO_SIZE, 1);
 
 	}
@@ -131,7 +163,10 @@ namespace priscas
 		if(this->data != nullptr)
 		{
 			// Declare the below memory hierarchy as invalid
-			afu->write(MMIO_BASE_ADDR, 0x0);
+			afu->write(MMIO_BASE_ADDR_S0, 0x0);
+			afu->write(MMIO_BASE_ADDR_S1, 0x0);
+			afu->write(MMIO_BASE_ADDR_S2, 0x0);
+			afu->write(MMIO_BASE_ADDR_S3, 0x0);
 
 			// Deallocate array
 			afu->free(this->data);
