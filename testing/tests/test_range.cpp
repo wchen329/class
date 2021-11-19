@@ -47,4 +47,11 @@ void test_range()
 		assertEquals(r.next(), i);
 	}
 	assertEquals(r.atEnd(), true);
+
+	// Singleton
+	r = range("1");
+	assertEquals(r.atEnd(), false);
+	assertEquals(r.next(), 1);
+	assertEquals(r.atEnd(), true);
+	
 }

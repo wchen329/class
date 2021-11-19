@@ -23,7 +23,8 @@
 namespace priscas
 {
 
-	range::range(const UPString& specifier)
+	range::range(const UPString& specifier) :
+		next_count(0)
 	{
 		// 0th value - the begin
 		// 1st value - the end
@@ -85,7 +86,7 @@ namespace priscas
 
 		// Now evaluate the range
 		first = begin;
-		last = end;
+		bound = step > 0 ? (end - first) / step + 1 : (first - end) / step + 1;
 		this->step = step;
 		curr = begin;
 	}

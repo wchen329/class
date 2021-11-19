@@ -132,8 +132,8 @@ namespace priscas
 		// Could also use new...
 
 		// First, find how segments we need
-		uint64_t seg_count = bytes / GB +
-			((bytes % GB) != 0 ? 1: 0);
+		//uint64_t seg_count = bytes / GB +
+		//	((bytes % GB) != 0 ? 1: 0);
 
 		// Allocate that many segments, at most 1GB each
 		uint64_t bytes_left = bytes;
@@ -165,10 +165,7 @@ namespace priscas
 
 		// When allocating, we have to write the array
 		// starting address out
-		afu->write(MMIO_BASE_ADDR_S0, reinterpret_cast<uint64_t>(this->data[0]));
-		afu->write(MMIO_BASE_ADDR_S1, reinterpret_cast<uint64_t>(this->data[1]));
-		afu->write(MMIO_BASE_ADDR_S2, reinterpret_cast<uint64_t>(this->data[2]));
-		afu->write(MMIO_BASE_ADDR_S3, reinterpret_cast<uint64_t>(this->data[3]));
+		this->map_mem();
 		afu->write(MMIO_SIZE, 1);
 
 	}
@@ -190,5 +187,13 @@ namespace priscas
 					this->data[dp] = nullptr;
 				}
 			}
+	}
+
+	void mmem::map_mem()
+	{
+		afu->write(MMIO_BASE_ADDR_S0, reinterpret_cast<uint64_t>(this->data[0]));
+		afu->write(MMIO_BASE_ADDR_S1, reinterpret_cast<uint64_t>(this->data[1]));
+		afu->write(MMIO_BASE_ADDR_S2, reinterpret_cast<uint64_t>(this->data[2]));
+		afu->write(MMIO_BASE_ADDR_S3, reinterpret_cast<uint64_t>(this->data[3]));
 	}
 }

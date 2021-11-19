@@ -44,6 +44,7 @@ namespace priscas
 			void resize(size_t size);
 			void reset();
 			void setAFU(AFU* afu) { this->afu = afu; }
+			void map_mem();
 			~mmem();
 		private:
 			mmem operator=(const mmem &);		// copy assignment, disabled
