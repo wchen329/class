@@ -66,8 +66,8 @@ namespace priscas
 	void mmem::resize(size_t size)
 	{
 		dealloc();
-		alloc(size);
 		this->size = size;
+		alloc(size);
 	}
 
 	mmem::~mmem()
@@ -187,6 +187,7 @@ namespace priscas
 				if(this->data[dp] != nullptr)
 				{
 					afu->free(this->data[dp]);
+					this->data[dp] = nullptr;
 				}
 			}
 	}
