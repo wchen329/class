@@ -85,7 +85,7 @@ namespace priscas
 		while(count < (end-begin))
 		{
 			offset = (begin + count) % size;
-			byte_8b buf = data[offset];
+			byte_8b buf = (*this)[offset];
 			fwrite(&buf, sizeof(byte_8b), 1, f);
 			++count;
 		}
@@ -101,7 +101,7 @@ namespace priscas
 			byte_8b buf = 0;
 			uint64_t where = (begin + offset) % size;
 			read_count = fread(&buf, sizeof(byte_8b), 1, f);
-			data[where] = buf;
+			(*this)[where] = buf;
 			++offset;
 		}
 		while(read_count);
@@ -111,9 +111,17 @@ namespace priscas
 	{
 		// Can't use memset because of volatile
 		// Do this slow iterative reset...
-		for(size_t itr = 0; itr < this->size; ++itr)
+		size_t brem = this->size;
+		for(size_t sitr = 0; sitr < 4; ++sitr)
 		{
-			data[itr] = 0x0;
+			size_t nextsize = brem < GB ? brem : GB;
+
+			for(size_t itr = 0; itr < nextsize; ++itr)
+			{
+				data[sitr][itr] = 0x0;
+			}
+
+			brem -= nextsize;
 		}
 	}
 
