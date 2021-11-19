@@ -330,18 +330,20 @@ namespace priscas
 			if(args[aitr] == "-h")
 			{
 				hexOutput = true;
+				first += 1;
 			}
 
 			if(args[aitr] == "-a")
 			{
 				asciiOutput = true;
+				first += 1;
 			}
 
 			if(args[aitr] == "-b")
 			{
 				if(args.size() <= aitr + 1)
 				{
-					inst.WriteToError("Error: -b requires an argument");
+					inst.WriteToError("Error: -b requires an argument\n");
 					return;
 				}
 
@@ -351,15 +353,17 @@ namespace priscas
 					&& output_byte_size != 8
 				)
 				{
-					inst.WriteToError("Error: -b can only take in the following values: (1, 2, 4, 8).");
+					inst.WriteToError("Error: -b can only take in the following values: (1, 2, 4, 8).\n");
 					return;
 				}
+
+				first += 2;
 			}
 		}
 
 		if(asciiOutput && output_byte_size != 1)
 		{
-			inst.WriteToError("Error: -a and -b {2, 4, 8} are incompatible with each other. Specify either but not both");
+			inst.WriteToError("Error: -a and -b {2, 4, 8} are incompatible with each other. Specify either but not both\n");
 			return;
 		}
 
