@@ -86,7 +86,7 @@ namespace priscas
 
 		// Now evaluate the range
 		first = begin;
-		bound = step > 0 ? (end - first) / step + 1 : (first - end) / step + 1;
+		bound = step > 0 ? (end - first) / step + 1 : (first - end) / -step + 1;
 		this->step = step;
 		curr = begin;
 	}
