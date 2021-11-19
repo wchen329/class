@@ -25,23 +25,29 @@
 namespace priscas
 {
 	volatile byte_8b& mmem::operator[](ptrdiff_t ind) {
-		return data[ind];
+		ptrdiff_t segno = ((ind >> 30) & 3); // & 3 = 2'b11 zeroes
+		ptrdiff_t offset = (ind & ((1 << 30) - 1));
+
+		return data[segno][offset];
 	}
 
 	const volatile byte_8b& mmem::operator[](ptrdiff_t ind) const
 	{
-		return data[ind];
+		ptrdiff_t segno = ((ind >> 30) & 3); // & 3 = 2'b11 zeroes
+		ptrdiff_t offset = (ind & ((1 << 30) - 1));
+
+		return data[segno][offset];
 	}
 
 	mmem::mmem() :
 		size(0),
-		data(4)
+		data(4, 0x0)
 	{
 	}
 
 	mmem::mmem(size_t size) : 
 		size(size),
-		data(4)
+		data(4, 0x0)
 	{
 		alloc(size);
 	}
@@ -168,8 +174,11 @@ namespace priscas
 			afu->write(MMIO_BASE_ADDR_S2, 0x0);
 			afu->write(MMIO_BASE_ADDR_S3, 0x0);
 
-			// Deallocate array
-			afu->free(this->data);
+			// Deallocate all pointers in the array
+			for(size_t dp = 0; dp < 4; ++dp)
+			{
+				afu->free(this->data[dp]);
+			}
 		}
 	}
 }
