@@ -173,8 +173,6 @@ namespace priscas
 
 	void mmem::dealloc()
 	{
-		if(this->data != nullptr)
-		{
 			// Declare the below memory hierarchy as invalid
 			afu->write(MMIO_BASE_ADDR_S0, 0x0);
 			afu->write(MMIO_BASE_ADDR_S1, 0x0);
@@ -184,8 +182,10 @@ namespace priscas
 			// Deallocate all pointers in the array
 			for(size_t dp = 0; dp < 4; ++dp)
 			{
-				afu->free(this->data[dp]);
+				if(this->data[dp] != nullptr)
+				{
+					afu->free(this->data[dp]);
+				}
 			}
-		}
 	}
 }
