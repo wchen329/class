@@ -61,9 +61,10 @@ namespace priscas
 									std::string("For more information, just use .help without specifying any arguments.\n");
 
 	const std::string HELP_MEM =	std::string(".mem\n") +
-									std::string("Usage: .mem [-a OR -h] range_0... range_1...\n") +
+									std::string("Usage: .mem [-a OR -h OR -b [byte_count]] range_0... range_1...\n") +
 									std::string("-h: use hex value output with hex indexing\n") +
 									std::string("-a: use ascii value output with hex indexing\n") +
+									std::string("-b [n]: print words of n bytes instead of single bytes (incompatible with -a)\n") +
 									std::string("With no args, .mem will only print out the size of main memory\n") +
 									std::string("However a single memory address can be printed with a single unsigned integer argument:\n") +
 									std::string(".mem 0 # print mem[0]\n") +
@@ -95,8 +96,8 @@ namespace priscas
 
 	const UPString HELP_SR = UPString(".sr\n") +
 		UPString("[no args] - doesn't do anything\n") +
-		UPString("-r pathtofile [-bige] address: flattens file, beginning at address\n\tSpecify bige to interpret as big endian.\n") +
-		UPString("-s pathtofile [-bige] begin,end: saves memory bytes from begin to end into file.\n\tSpecify bige to interpret as big endian.\n");
+		UPString("-r pathtofile address: flattens file, beginning at specified address\n") +
+		UPString("-s pathtofile begin,end: saves memory bytes from begin to end into file at pathtofile\n");
 
 	const UPString HELP_WAIT = UPString(".wait\n") +
 		UPString("Usage: .wait spin_address value_to_look_for [timeout]\n") +

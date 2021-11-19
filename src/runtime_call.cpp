@@ -205,8 +205,6 @@ namespace priscas
 
 		if(args[1] == "-r")
 		{
-			bool bige = false;
-
 			if(args.size() < 4)
 			{
 				inst.WriteToError("-r: not enough arguments\n");
@@ -223,19 +221,6 @@ namespace priscas
 			}
 
 			int iind = 3;
-
-			if(args[3] == "-bige")
-			{
-				bige = true;
-				iind = 4;
-
-				if(args.size() < 5)
-				{
-					inst.WriteToError("-r: not enough arguments");
-					fclose(f);
-					return;
-				}
-			}
 
 			uint64_t addr = 0;
 			try
@@ -265,7 +250,6 @@ namespace priscas
 		}
 		else if(args[1] == "-s")
 		{
-			bool bige = false;
 
 			if(args.size() < 5)
 			{
@@ -283,19 +267,6 @@ namespace priscas
 			}
 
 			int iind = 3;
-
-			if(args[3] == "-bige")
-			{
-				bige = true;
-				iind = 4;
-
-				if(args.size() < 6)
-				{
-					inst.WriteToError("-s: not enough arguments");
-					fclose(f);
-					return;
-				}
-			}
 
 			uint64_t addr_b = 0;
 			uint64_t addr_e = 0;
@@ -353,16 +324,43 @@ namespace priscas
 		size_t first = 1;
 		bool hexOutput = false;
 		bool asciiOutput = false;
-		if(args[1] == "-h")
+		size_t output_byte_size = 1;
+		for(size_t aitr = 1; aitr < args.size(); ++aitr)
 		{
-			hexOutput = true;
-			first++;
+			if(args[aitr] == "-h")
+			{
+				hexOutput = true;
+			}
+
+			if(args[aitr] == "-a")
+			{
+				asciiOutput = true;
+			}
+
+			if(args[aitr] == "-b")
+			{
+				if(args.size() <= aitr + 1)
+				{
+					inst.WriteToError("Error: -b requires an argument");
+					return;
+				}
+
+				output_byte_size = atoi(args[aitr + 1]);
+
+				if(output_byte_size != 2 && output_byte_size != 4
+					&& output_byte_size != 8
+				)
+				{
+					inst.WriteToError("Error: -b can only take in the following values: (1, 2, 4, 8).");
+					return;
+				}
+			}
 		}
 
-		if(args[1] == "-a")
+		if(asciiOutput && output_byte_size != 1)
 		{
-			asciiOutput = true;
-			first++;
+			inst.WriteToError("Error: -a and -b {2, 4, 8} are incompatible with each other. Specify either but not both");
+			return;
 		}
 
 		// Otherwise print memory specific to indicies
@@ -373,14 +371,58 @@ namespace priscas
 			while(!r.atEnd())
 			{
 				size_t itr_2 = r.next();
-				if(itr_2 >= inst.Mem().get_size() || itr_2 < 0)
+				if(itr_2 >= inst.Mem().get_size() || itr_2 < 0 ||
+					(output_byte_size == 2 && itr_2 + 2 >= inst.Mem().get_size()) ||
+					(output_byte_size == 4 && itr_2 + 4 >= inst.Mem().get_size()) ||
+					(output_byte_size == 8 && itr_2 + 8 >= inst.Mem().get_size()) ||
+				)
 				{
 					throw priscas::mem_oob_exception();
 				}
 
 				UPString index_str = hexOutput || asciiOutput ? genericHexBuilder<uint32_t, 32>(itr_2) :  priscas_io::StrTypes::SizeToStr(itr_2);
-				UPString val_str = hexOutput ? genericHexBuilder<uint8_t, 8>(inst.Mem()[itr_2]) :
-							asciiOutput ? UPString("\'") + (UPString() + static_cast<char>(inst.Mem()[itr_2])) +  UPString("\'") : priscas_io::StrTypes::IntToStr(inst.Mem()[itr_2]);
+				UPString val_str;
+				if(asciiOutput)
+				{
+					val_str = UPString("\'") + (UPString() + static_cast<char>(inst.Mem()[itr_2])) + UPString("\'"); 
+				}
+				else
+				{
+
+#define MEM_VALUE_BUILDER(OTYPE, OBITS) \
+	OTYPE word = 0; uint8_t* word_ptr = reinterpret_cast<uint8_t*>(&word); \
+	for(size_t itr_M = 0; itr_M < sizeof(OTYPE)) \
+	{ \
+		word_ptr[itr_M] = inst.Mem()[itr_2 + itr_M]; \
+	} \
+	val_str = hexOutput ? genericHexBuilder<OTYPE, OBITS>(word) : priscas_io::StrTypes::Int64ToStr(word);
+
+					// todo genericize
+					switch(output_byte_size)
+					{
+						case 1:
+							val_str = hexOutput ? genericHexBuilder<uint8_t, 8>(inst.Mem()[itr_2]) : priscas_io::StrTypes::IntToStr(inst.Mem()[itr_2]);
+						break;
+
+						case 2:
+						{
+							MEM_VALUE_BUILDER(int16_t, 16);
+						}
+						break;
+
+						case 4:
+						{
+							MEM_VALUE_BUILDER(int32_t, 32);
+						}
+						break;
+
+						case 8:
+						{
+							MEM_VALUE_BUILDER(int64_t, 64);
+						}
+						break;
+					}
+				}
 
 				std::string o = (std::string("Mem[") + index_str + std::string("]: ") + 
 					val_str + priscas_io::newLine);
