@@ -51,7 +51,7 @@ namespace priscas
 
 			bool atEnd()
 			{
-				next_count <= bound;
+				return next_count <= bound;
 			}
 
 		private:
