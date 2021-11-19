@@ -146,10 +146,12 @@ namespace priscas
 			if(bytes_left >= GB)
 			{
 				data[segno] = afu->malloc<byte_8b>(GB);
+				bytes_left -= GB;
 			}
 			else
 			{
 				data[segno] = afu->malloc<byte_8b>(bytes_left);
+				bytes_left = 0;
 			}
 
 			if(data[segno] == nullptr)
