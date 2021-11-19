@@ -345,7 +345,7 @@ namespace priscas
 					return;
 				}
 
-				output_byte_size = atoi(args[aitr + 1]);
+				output_byte_size = atoi(args[aitr + 1].c_str());
 
 				if(output_byte_size != 2 && output_byte_size != 4
 					&& output_byte_size != 8
@@ -374,7 +374,7 @@ namespace priscas
 				if(itr_2 >= inst.Mem().get_size() || itr_2 < 0 ||
 					(output_byte_size == 2 && itr_2 + 2 >= inst.Mem().get_size()) ||
 					(output_byte_size == 4 && itr_2 + 4 >= inst.Mem().get_size()) ||
-					(output_byte_size == 8 && itr_2 + 8 >= inst.Mem().get_size()) ||
+					(output_byte_size == 8 && itr_2 + 8 >= inst.Mem().get_size())
 				)
 				{
 					throw priscas::mem_oob_exception();
@@ -391,7 +391,7 @@ namespace priscas
 
 #define MEM_VALUE_BUILDER(OTYPE, OBITS) \
 	OTYPE word = 0; uint8_t* word_ptr = reinterpret_cast<uint8_t*>(&word); \
-	for(size_t itr_M = 0; itr_M < sizeof(OTYPE)) \
+	for(size_t itr_M = 0; itr_M < sizeof(OTYPE); ++itr_M) \
 	{ \
 		word_ptr[itr_M] = inst.Mem()[itr_2 + itr_M]; \
 	} \
