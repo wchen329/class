@@ -152,14 +152,13 @@ namespace priscas
 				data[segno] = afu->malloc<byte_8b>(bytes_left);
 			}
 
+			if(data[segno] == nullptr)
+			{
+				throw std::bad_alloc();
+			}
+
 			++segno;
 
-		}
-
-		this->data = (afu->malloc<byte_8b>(bytes));
-		if(data == nullptr)
-		{
-			throw std::bad_alloc();
 		}
 
 		// When allocating, we have to write the array
