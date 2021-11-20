@@ -24,9 +24,9 @@
 
 // These predefines are specifically used for Windows Resource Compiler
 #define PRISCAS_BRANDING_AUTHOR "Winor Chen"
-#define PRISCAS_BRANDING_FULL_VERSION_STRING "0.4.0.10000"
-#define PRISCAS_BRANDING_COPYRIGHT "Copyright (c) 2019 Winor Chen"
-#define PRISCAS_BRANDING_FULL_VERSION 0,4,0,10000
+#define PRISCAS_BRANDING_FULL_VERSION_STRING "1.1.2021.12"
+#define PRISCAS_BRANDING_COPYRIGHT "Copyright (c) 2021 Winor Chen"
+#define PRISCAS_BRANDING_FULL_VERSION 1,1,11,2021
 
 /* Header that includes information about project name, description, and versioning, etc., etc.
  * wchen329
@@ -35,7 +35,7 @@ namespace branding
 {
 	const std::string APPLICATION_NAME = std::string("CLASS");
 	const std::string APPLICATION_DESC = std::string("[assembler]");
-	const std::string APPLICATION_VERSION = std::string("1.0");
+	const std::string APPLICATION_VERSION = std::string("1.1");
 
 	#ifdef P_RELEASE
 		const std::string APPLICATION_DBG = "(stable)";

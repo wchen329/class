@@ -11,7 +11,8 @@ module cpu
 	output logic [1:0] op,
 	output logic[63:0] io_address,
 	input logic[31:0] common_data_bus_in,
-	output logic[31:0] common_data_bus_out
+	output logic[31:0] common_data_bus_out,
+        output logic[63:0] cv_value
 );
 
 	typedef enum reg
@@ -31,6 +32,7 @@ module cpu
 		io_address = 'h0;
 		op = 2'b01;
 		common_data_bus_out = '0;
+		cv_value = 'h01;
 		case(state) 
 			READ: begin
 				

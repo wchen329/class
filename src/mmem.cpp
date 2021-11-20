@@ -20,25 +20,34 @@
 //////////////////////////////////////////////////////////////////////////////
 #include "mmem.h"
 
+#define GB 1073741824
+
 namespace priscas
 {
 	volatile byte_8b& mmem::operator[](ptrdiff_t ind) {
-		return data[ind];
+		ptrdiff_t segno = ((ind >> 30) & 3); // & 3 = 2'b11 zeroes
+		ptrdiff_t offset = (ind & ((1 << 30) - 1));
+
+		return data[segno][offset];
 	}
 
 	const volatile byte_8b& mmem::operator[](ptrdiff_t ind) const
 	{
-		return data[ind];
+		ptrdiff_t segno = ((ind >> 30) & 3); // & 3 = 2'b11 zeroes
+		ptrdiff_t offset = (ind & ((1 << 30) - 1));
+
+		return data[segno][offset];
 	}
 
 	mmem::mmem() :
-		data(nullptr),
-		size(0)
+		size(0),
+		data(4, 0x0)
 	{
 	}
 
 	mmem::mmem(size_t size) : 
-		size(size)
+		size(size),
+		data(4, 0x0)
 	{
 		alloc(size);
 	}
@@ -57,8 +66,8 @@ namespace priscas
 	void mmem::resize(size_t size)
 	{
 		dealloc();
-		alloc(size);
 		this->size = size;
+		alloc(size);
 	}
 
 	mmem::~mmem()
@@ -76,7 +85,7 @@ namespace priscas
 		while(count < (end-begin))
 		{
 			offset = (begin + count) % size;
-			byte_8b buf = data[offset];
+			byte_8b buf = (*this)[offset];
 			fwrite(&buf, sizeof(byte_8b), 1, f);
 			++count;
 		}
@@ -92,7 +101,7 @@ namespace priscas
 			byte_8b buf = 0;
 			uint64_t where = (begin + offset) % size;
 			read_count = fread(&buf, sizeof(byte_8b), 1, f);
-			data[where] = buf;
+			(*this)[where] = buf;
 			++offset;
 		}
 		while(read_count);
@@ -102,9 +111,17 @@ namespace priscas
 	{
 		// Can't use memset because of volatile
 		// Do this slow iterative reset...
-		for(size_t itr = 0; itr < this->size; ++itr)
+		size_t brem = this->size;
+		for(size_t sitr = 0; sitr < 4; ++sitr)
 		{
-			data[itr] = 0x0;
+			size_t nextsize = brem < GB ? brem : GB;
+
+			for(size_t itr = 0; itr < nextsize; ++itr)
+			{
+				data[sitr][itr] = 0x0;
+			}
+
+			brem -= nextsize;
 		}
 	}
 
@@ -113,28 +130,69 @@ namespace priscas
 		// Can change allocator
 		// Throw std::bad_alloc, potentially
 		// Could also use new...
-		this->data = (afu->malloc<byte_8b>(bytes));
-		if(data == nullptr)
+
+		// First, find how segments we need
+		//uint64_t seg_count = bytes / GB +
+		//	((bytes % GB) != 0 ? 1: 0);
+
+		// Allocate that many segments, at most 1GB each
+		uint64_t bytes_left = bytes;
+		int segno = 0;
+		while(bytes_left != 0)
 		{
-			throw std::bad_alloc();
+			// Critical error if more than 4 segments
+			if(segno > 4) abort();
+
+			if(bytes_left >= GB)
+			{
+				data[segno] = afu->malloc<byte_8b>(GB);
+				bytes_left -= GB;
+			}
+			else
+			{
+				data[segno] = afu->malloc<byte_8b>(bytes_left);
+				bytes_left = 0;
+			}
+
+			if(data[segno] == nullptr)
+			{
+				throw std::bad_alloc();
+			}
+
+			++segno;
+
 		}
 
 		// When allocating, we have to write the array
 		// starting address out
-		afu->write(MMIO_BASE_ADDR, reinterpret_cast<uint64_t>(this->data));
-		afu->write(MMIO_SIZE, 1);
+		this->map_mem();
 
 	}
 
 	void mmem::dealloc()
 	{
-		if(this->data != nullptr)
-		{
 			// Declare the below memory hierarchy as invalid
-			afu->write(MMIO_BASE_ADDR, 0x0);
+			afu->write(MMIO_BASE_ADDR_S0, 0x0);
+			afu->write(MMIO_BASE_ADDR_S1, 0x0);
+			afu->write(MMIO_BASE_ADDR_S2, 0x0);
+			afu->write(MMIO_BASE_ADDR_S3, 0x0);
 
-			// Deallocate array
-			afu->free(this->data);
-		}
+			// Deallocate all pointers in the array
+			for(size_t dp = 0; dp < 4; ++dp)
+			{
+				if(this->data[dp] != nullptr)
+				{
+					afu->free(this->data[dp]);
+					this->data[dp] = nullptr;
+				}
+			}
+	}
+
+	void mmem::map_mem()
+	{
+		afu->write(MMIO_BASE_ADDR_S0, reinterpret_cast<uint64_t>(this->data[0]));
+		afu->write(MMIO_BASE_ADDR_S1, reinterpret_cast<uint64_t>(this->data[1]));
+		afu->write(MMIO_BASE_ADDR_S2, reinterpret_cast<uint64_t>(this->data[2]));
+		afu->write(MMIO_BASE_ADDR_S3, reinterpret_cast<uint64_t>(this->data[3]));
 	}
 }

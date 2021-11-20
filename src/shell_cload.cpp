@@ -165,13 +165,10 @@ namespace priscas
 		// First, reset the AFU state
 		afu.reset();
 
-		// Then we have to write back the size
-		afu.write(MMIO_SIZE, 1);
-
 		// Finally, we must write the old base address out.
 		// If we are allocating new memory, it will get replaced later.
 		// Not a problem.
-		afu.write(MMIO_BASE_ADDR, reinterpret_cast<uint64_t>(&Mem()[0]));
+		Mem().map_mem();
 	}
 
 	// Set up list of runtime directives

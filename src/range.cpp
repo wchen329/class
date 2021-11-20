@@ -22,7 +22,9 @@
 
 namespace priscas
 {
-	range::range(const UPString& specifier)
+
+	range::range(const UPString& specifier) :
+		next_count(0)
 	{
 		// 0th value - the begin
 		// 1st value - the end
@@ -60,13 +62,13 @@ namespace priscas
 		// Then just convert.
 		for(size_t itr_2 = 0; itr_2 < string_list.size(); itr_2++)
 		{
-			unsigned long val = StrOp::StrToUInt64(string_list[itr_2]);
+			long long val = StrOp::StrToInt64(string_list[itr_2]);
 			bound_list.push_back(val);
 		}
 
-		long begin = bound_list[0];
-		long end = bound_list.size() <= 1 ? bound_list[0] : bound_list[1];
-		long step = bound_list.size() <= 2 ? 1 : bound_list[2];
+		long long begin = bound_list[0];
+		long long end = bound_list.size() <= 1 ? bound_list[0] : bound_list[1];
+		long long step = bound_list.size() <= 2 ? 1 : bound_list[2];
 
 		// Check for sensical stepping
 		if(step == 0)
@@ -83,10 +85,9 @@ namespace priscas
 		}
 
 		// Now evaluate the range
-		while((end - begin >= 0 && step > 0) || (end - begin <= 0 && step < 0))
-		{
-			numbers.push_back(begin);
-			begin += step;
-		}
+		first = begin;
+		bound = step > 0 ? (end - first) / step + 1 : (first - end) / -step + 1;
+		this->step = step;
+		curr = begin;
 	}
 }

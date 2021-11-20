@@ -30,15 +30,12 @@
 
 namespace priscas
 {
-	typedef std::list<size_t>::iterator range_iterator;
 
 	/* A generic, iterable "range"
 	 * Really just an ordered collection of numbers which can be iterated over
 	 */
 	class range
 	{
-		std::list<size_t> numbers;
-
 		// Constructs a range using a string specified
 		// Ranges are constructed using MATLAB syntax, that is:
 		// begin (inclusive):end (inclusive):step
@@ -46,8 +43,23 @@ namespace priscas
 		// the step can be omitted which then would look like 0:4 (0, 1, 2, 3)
 		public:
 			range(const UPString&);
-			range_iterator begin() { return this->numbers.begin(); }
-			range_iterator end() { return this->numbers.end(); }
+			
+			// Reset the range so it iterates from the beginning.
+			void reset() { this->curr = first; }
+
+			size_t next() { size_t ret = curr; curr += step; ++next_count; return ret; }
+
+			bool atEnd()
+			{
+				return next_count >= bound;
+			}
+
+		private:
+			int64_t first; // Initial Value in Range
+			int64_t bound; // How many times next can be called without exhausting the bound
+			int64_t step; // The iterator step
+			int64_t curr; // Current value
+			int64_t next_count; // How many times next was called
 	};
 }
 

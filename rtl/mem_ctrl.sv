@@ -26,16 +26,12 @@ module mem_ctrl
 	input wire host_wr_ready,
 
 	input logic [1:0] op,
-	input wire [ADDR_BITCOUNT-1:0] raw_address,
-	input wire [ADDR_BITCOUNT-1:0] address_offset,
 
 	input logic [WORD_SIZE-1:0] common_data_bus_read_in, 
 	output logic [WORD_SIZE-1:0] common_data_bus_write_out, 
 
 	input logic [CL_SIZE_WIDTH-1:0] host_data_bus_read_in,
 	output logic [CL_SIZE_WIDTH-1:0] host_data_bus_write_out,
-
-	output logic [ADDR_BITCOUNT-1:0] corrected_address,
 
 	output logic ready,
 	output logic tx_done,
@@ -224,6 +220,5 @@ module mem_ctrl
 
 	// Continuous Assigns
 	assign op_in = opcode'(op);
-	assign corrected_address = raw_address + address_offset;
 
 endmodule

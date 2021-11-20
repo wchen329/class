@@ -29,8 +29,10 @@ namespace priscas
 	{
 		UPString ret;
 		bool notws = false;
-		for(char c : ups)
+		for(size_t ind = 0; ind < ups.size(); ++ind)
 		{
+			char c = ups[ind];
+
 			if(!is_whitespace(c))
 			{
 				notws = true;
@@ -49,8 +51,9 @@ namespace priscas
 	{
 		UPString ret;
 
-		for(char c : ups)
+		for(size_t ind = 0; ind < ups.size(); ++ind)
 		{
+			char c = ups[ind];
 			if(c == ';') break;
 			if(c == '\n') break;
 			ret += c;
@@ -100,23 +103,62 @@ namespace priscas
 
 	}
 
+	// Convert ascii to binary, supports up to hex
+	byte_8b StrOp::get_digit_value(char ascii)
+	{
+		// For numerical, easy; just subtract the ASCII base
+		if(ascii >= '0' && ascii <= '9')
+		{
+			return ascii - 48; // '0' is 48
+		}
+
+		// For hex chars
+		switch(ascii)
+		{
+
+			// More flexible ways to do this but... this is okay too
+			case 'a':
+			case 'A':
+				return 10;
+			case 'b':
+			case 'B':
+				return 11;
+			case 'c':
+			case 'C':
+				return 12;
+			case 'd':
+			case 'D':
+				return 13;
+			case 'e':
+			case 'E':
+				return 14;
+			case 'f':
+			case 'F':
+				return 15;
+			default:
+				throw mt_bad_imm();
+		}
+	}
+
 	uint64_t StrOp::StrToUInt64(const UPString& in)
 	{
-		return numeric_interpret<unsigned long long, &strtoull>(in);
+		//return numeric_interpret<unsigned long long, &strtoull>(in);
+		return numeric_interpret<uint64_t>(in);
 	}
 
 	int64_t StrOp::StrToInt64(const UPString& in)
 	{
-		return numeric_interpret<long long, &strtoll>(in);
+		//return numeric_interpret<long long, &strtoll>(in);
+		return numeric_interpret<int64_t>(in);
 	}
 
 	uint32_t StrOp::StrToUInt32(const UPString& in)
 	{
-		return numeric_interpret<unsigned long, &strtoul>(in);
+		return numeric_interpret<uint32_t>(in);
 	}
 
 	int32_t StrOp::StrToInt32(const UPString& in)
 	{
-		return numeric_interpret<signed long, &strtol>(in);
+		return numeric_interpret<int32_t>(in);
 	}
 }

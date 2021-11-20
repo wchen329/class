@@ -9,4 +9,6 @@ void test_reverse_endian();
 void test_shell_comments();
 void test_shell_justexit();
 void test_shell_multidirectsymbol();
+void test_strconv();
+void test_range();
 #endif

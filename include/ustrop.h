@@ -28,6 +28,8 @@
 #include "priscas_global.h"
 #include "primitives.h"
 #include <algorithm>
+#include <cstdint>
+#include <cstdlib>
 
 namespace priscas
 {
@@ -62,10 +64,12 @@ namespace priscas
 		 */
 		static UPString has_prefix(const UPString& strin, const UPString& sprfx);
 
+
+
 		/* numeric_interpet<>
 		 * Interpret string as specific type
 		 */
-		template<class Tin, Tin (*f)(const char*, char**, int) throw()>
+		template<class Tin>
 		static Tin numeric_interpret(const UPString& in)
 		{
 
@@ -96,23 +100,46 @@ namespace priscas
 				}
 			}
 
-			char * epb = nullptr;
-			ret = f(unprefd.c_str(), &epb, base);
-
-			if(*epb != '\0')
+			// Check for "-". If it precedes everything, make the number
+			// negative
+			if(unprefd.size() == 0)
 			{
-				throw mt_bad_imm();
-			}
-		
-				return ret;
+				throw priscas::mt_bad_imm();
 			}
 
-			static uint64_t StrToUInt64(const UPString&);
-			static int64_t StrToInt64(const UPString&);
-			static uint32_t StrToUInt32(const UPString&);
-			static int32_t StrToInt32(const UPString&);
+			bool neg = unprefd[0] == '-';
+			if(neg) unprefd = unprefd.substr(1, unprefd.size());
+
+			// For convenience reverse to calc
+			std::reverse<UPString::iterator>(unprefd.begin(), unprefd.end());
+
+			// Use the definition of a n-radix number to build ret (little endian)
+			for(size_t itr = 0; itr < unprefd.size(); ++itr)
+			{
+				Tin multiplier = 1;
+
+				for(size_t m_itr = 0; m_itr < itr; ++m_itr)
+				{
+					multiplier *= base;
+				}
+
+				ret += get_digit_value(unprefd[itr]) * multiplier;
+			}
+
+			if(neg) ret = -ret;
+
+			return ret;
+		}
+
+		static byte_8b get_digit_value(char ascii);
+
+		static uint64_t StrToUInt64(const UPString&);
+		static int64_t StrToInt64(const UPString&);
+		static uint32_t StrToUInt32(const UPString&);
+		static int32_t StrToInt32(const UPString&);
 
 	};
+
 }
 
 #endif

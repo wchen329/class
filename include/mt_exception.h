@@ -238,9 +238,10 @@ namespace priscas
 		mt_illegal_value_for(const UPString& name, const UPString& value, const UPString_Vec& accepted)
 		{
 			UPString all_accepted;
-			for(UPString ups : accepted)
+			typedef UPString_Vec::const_iterator UPString_Vec_CItr;
+			for(UPString_Vec_CItr ups = accepted.begin(); ups != accepted.end(); ++ups)
 			{
-				all_accepted += (ups + " ");
+				all_accepted += (*ups + " ");
 			}
 
 			mt_exception::except_num = exception_nums::GENERAL;

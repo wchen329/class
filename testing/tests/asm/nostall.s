@@ -1,8 +1,8 @@
-# "No stall"
-# This test cases tries to catch several instructions that
-# may accidentally cause stalls but do not require them
+; "No stall"
+; This test cases tries to catch several instructions that
+; may accidentally cause stalls but do not require them
 
-# Load to use, separated by no-op
+; Load to use, separated by no-op
 addi $v0, $zero, 700
 sw $v0, 700($zero)
 addi $s0, $zero, 500
@@ -11,7 +11,7 @@ lw $s3, 200($zero)
 sll $zero, $zero, 0
 lw $s1, 200($s3)
 
-# Stores followed directly by a load
+; Stores followed directly by a load
 addi $a0, $zero, 15
 
 sb $a0, 1000($a0)
@@ -26,4 +26,3 @@ sll $zero, $zero, 0
 sll $zero, $zero, 0
 sll $zero, $zero, 0
 sll $zero, $zero, 0
-.exit

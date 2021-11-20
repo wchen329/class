@@ -36,8 +36,11 @@ const unsigned SLEEP_MS = 10;
 
 enum MmioAddr {
    MMIO_GO = 0x0050,
-   MMIO_BASE_ADDR = 0x0052,
-   MMIO_SIZE = 0x0056
+   MMIO_BASE_ADDR_S0 = 0x0052,
+   MMIO_BASE_ADDR_S1 = 0x0054,
+   MMIO_BASE_ADDR_S2 = 0x0056,
+   MMIO_BASE_ADDR_S3 = 0x0058,
+   MMIO_CV = 0x005A
 };
 
 #endif

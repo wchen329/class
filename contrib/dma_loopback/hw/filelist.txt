@@ -12,5 +12,6 @@ hal.sv
 ccip_std_afu.sv
 ../../../rtl/mem_ctrl.sv
 ../../../rtl/cpu.sv
+../../../rtl/addr_tr_unit.sv
 
 QI:afu.qsf
