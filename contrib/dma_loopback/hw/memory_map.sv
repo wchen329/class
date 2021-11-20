@@ -105,7 +105,9 @@ module memory_map
 	end
 	else begin
            if (mmio.rd_en == 1'b1) begin
-              16'h005a: mmio.rd_data <= cv_value;
+              case (mmio.rd_addr)
+                 16'h005a: mmio.rd_data <= cv_value;
+              endcase
            end 
 	end
    end
