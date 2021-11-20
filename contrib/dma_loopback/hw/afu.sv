@@ -100,8 +100,7 @@ module afu
    // go signal. It also sends a done signal back to software.
    memory_map
      #(
-       .ADDR_WIDTH(VIRTUAL_BYTE_ADDR_WIDTH),
-       .SIZE_WIDTH(CL_ADDR_WIDTH+1)
+       .ADDR_WIDTH(VIRTUAL_BYTE_ADDR_WIDTH)
        )
    memory_map (.*);
 
