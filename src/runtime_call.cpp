@@ -444,6 +444,8 @@ namespace priscas
 		uint64_t timeout = 1000;
 		uint64_t address_polling = 0;
 		uint8_t value_wait = 0;
+		bool mmio_wait = false;
+		uint64_t value_wait_mmio = 0;
 
 		if(args.size() < 3)
 		{
@@ -456,8 +458,16 @@ namespace priscas
 			// Arg 0: .wait
 			// Arg 1: address polling
 			// Arg 2: value to wait for
-			address_polling = StrOp::StrToUInt64(args[1]);
+			if(args[1] == "-m")
+			{
+				mmio_wait = true;
+			}
+			else
+			{
+				address_polling = StrOp::StrToUInt64(args[1]);
+			}
 			value_wait = StrOp::StrToUInt32(args[2]);
+			value_wait_mmio = StrOp::StrToUInt64(args[2]);
 		}
 		if(args.size() >= 4)
 		{
@@ -475,11 +485,21 @@ namespace priscas
 		{
 			priscas_osi::sleep(1);
 
-			// Check the corresponding memory address. If it is "val"
-			// then break.
-			if(inst.Mem()[address_polling]== value_wait)
+			if(mmio_wait)
 			{
-				break;
+				if(inst.AFU_getCV() == value_wait)
+				{
+					break;
+				}
+			}
+			else
+			{
+				// Check the corresponding memory address. If it is "val"
+				// then break.
+				if(inst.Mem()[address_polling] == value_wait)
+				{
+					break;
+				}
 			}
 			
 			++numms;

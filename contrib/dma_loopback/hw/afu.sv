@@ -114,6 +114,7 @@ module afu
    logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s1;
    logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s2;
    logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] wr_addr_s3;
+   logic [VIRTUAL_BYTE_ADDR_WIDTH-1:0] cv_value;
    wire tx_done;
    wire ready;
    wire rd_valid;
@@ -133,7 +134,8 @@ module afu
        .op(mem_op),
        .io_address(cpu_addr),
        .common_data_bus_in(cpu_in),
-       .common_data_bus_out(cpu_out)
+       .common_data_bus_out(cpu_out),
+       .cv_value(cv_value)
    );
 
    // Address Translation module
@@ -174,7 +176,10 @@ module afu
    assign dma.rd_addr = final_addr;
    assign dma.wr_addr = final_addr;
    
-   // Use the size (# of cache lines) specified by software.
+   // Use the size (# of cache lines) specified by the design.
+   wire [CL_ADDR_WIDTH:0] size;
+   assign size = 1; // hardcoded for now
+
    assign dma.rd_size = size;
    assign dma.wr_size = size;
 

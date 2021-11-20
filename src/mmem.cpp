@@ -166,7 +166,6 @@ namespace priscas
 		// When allocating, we have to write the array
 		// starting address out
 		this->map_mem();
-		afu->write(MMIO_SIZE, 1);
 
 	}
 

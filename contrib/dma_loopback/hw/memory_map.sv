@@ -27,17 +27,7 @@
 //               Addresses still must follow all rules for CCI-P, which requires
 //               even addresses for 64-bit data.
 //
-//               The memory map provides 4 inputs to the circuit:
-//               go      : h0050,
-//               rd_addr : h0052,
-//               wr_addr : h0054,
-//               size    : h0056
-//
-//               and provides one output to software:
-//               done    : h0058
-//
 //               rd_addr and wr_addr are both 64-bit virtual byte addresses.
-//               size is the number of cache lines to transfer
 //               go starts the AFU and done signals completion.
 
 //==========================================================================
@@ -45,9 +35,6 @@
 // ADDR_WIDTH : The number of bits in the read and write addresses. This will
 //              always be 64 since software provides 64-bit virtual addresses,
 //              but is parameterized since the HAL abstracts away the platform.
-// SIZE_WIDTH : The number of bits in the size signal. This essentially
-//              specifies the maximum number of cache lines that can be
-//              transferred in a single DMA transfer (2**SIZE_WIDTH).
 //==========================================================================
 
 //==========================================================================
@@ -65,7 +52,6 @@
 module memory_map
   #(
     parameter int ADDR_WIDTH,
-    parameter int SIZE_WIDTH
     )
    (
    input 	       clk,
@@ -78,9 +64,9 @@ module memory_map
    output logic [ADDR_WIDTH-1:0] wr_addr_s1,
    output logic [ADDR_WIDTH-1:0] wr_addr_s2,
    output logic [ADDR_WIDTH-1:0] wr_addr_s3,
-   output logic [SIZE_WIDTH-1:0] size,
    output logic        go,
-   input logic 	       done   
+   input logic 	       done,
+   input logic  [ADDR_WIDTH-1:0] cv_value
    );
 
    // =============================================================//   
@@ -93,7 +79,6 @@ module memory_map
 	 wr_addr_s1  <= '0;	     
 	 wr_addr_s2  <= '0;	     
 	 wr_addr_s3  <= '0;	     
-	 size     <= '0;
       end
       else begin
 	 go <= '0;
@@ -105,7 +90,6 @@ module memory_map
 	      16'h0054: wr_addr_s1  <= mmio.wr_data[$size(wr_addr_s1)-1:0];
 	      16'h0056: wr_addr_s2  <= mmio.wr_data[$size(wr_addr_s2)-1:0];
 	      16'h0058: wr_addr_s3  <= mmio.wr_data[$size(wr_addr_s3)-1:0];
-	      16'h005a: size        <= mmio.wr_data[$size(size)-1:0];
             endcase
          end
       end
@@ -118,6 +102,11 @@ module memory_map
 	if(rst) begin
 	    mmio.rd_data <= '0;
             // Here for legacy reasons might remove for optimization
+	end
+	else begin
+           if (mmio.rd_en == 1'b1) begin
+              16'h005a: mmio.rd_data <= cv_value;
+           end 
 	end
    end
 endmodule
