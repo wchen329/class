@@ -51,7 +51,7 @@
 
 module memory_map
   #(
-    parameter int ADDR_WIDTH,
+    parameter int ADDR_WIDTH
     )
    (
    input 	       clk,
