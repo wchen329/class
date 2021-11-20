@@ -32,7 +32,7 @@ module cpu
 		io_address = 'h0;
 		op = 2'b01;
 		common_data_bus_out = '0;
-		cv_value = '1;
+		cv_value = 'h01;
 		case(state) 
 			READ: begin
 				
